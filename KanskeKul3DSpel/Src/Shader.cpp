@@ -5,12 +5,12 @@
 
 Shader::Shader(std::string path, ShaderType type)
 {
-    m_ID = create(path, type);
+    m_id = create(path, type);
 }
 
 Shader::~Shader()
 {
-    glDeleteShader(m_ID);
+    glDeleteShader(m_id);
 }
 
 GLuint Shader::create(std::string path, ShaderType type)
@@ -71,34 +71,61 @@ GLuint Shader::create(std::string path, ShaderType type)
 
 Program::Program(std::initializer_list<Shader> shaders)
 {
-    m_ID = glCreateProgram();
+    m_id = glCreateProgram();
 
     for (Shader shader : shaders)
-        glAttachShader(m_ID, shader.getID());
+        glAttachShader(m_id, shader.getID());
 
-    glLinkProgram(m_ID);
+    glLinkProgram(m_id);
 
     GLint result = GL_FALSE;
     int logLength = 0;
 
-    glGetProgramiv(m_ID, GL_LINK_STATUS, &result);
-    glGetProgramiv(m_ID, GL_INFO_LOG_LENGTH, &logLength);
+    glGetProgramiv(m_id, GL_LINK_STATUS, &result);
+    glGetProgramiv(m_id, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0) {
         std::vector<char> errorMsg(logLength + 1);
-        glGetProgramInfoLog(m_ID, logLength, NULL, &errorMsg[0]);
+        glGetProgramInfoLog(m_id, logLength, NULL, &errorMsg[0]);
         printf("%s\n", &errorMsg[0]);
     }
 
     for (Shader shader : shaders)
-        glDetachShader(m_ID, shader.getID());
+        glDetachShader(m_id, shader.getID());
 }
 
 Program::~Program()
 {
-    glDeleteProgram(m_ID);
+    glDeleteProgram(m_id);
 }
 
 void Program::use()
 {
-    glUseProgram(m_ID);
+    glUseProgram(m_id);
+}
+
+GLuint Program::initializeUniformLocation(std::string name)
+{
+    GLuint id = 0;
+    if (!m_uniformLocations.count(name))
+    {
+         id = glGetUniformLocation(m_id, name.c_str());
+         m_uniformLocations.emplace(name, id);
+    }
+
+
+
+    return id;
+}
+
+GLuint Program::getUniformID(std::string name) const
+{
+    GLuint id = 0;
+
+    if (m_uniformLocations.count(name))
+        id = m_uniformLocations.at(name);
+
+    else
+        printf("uniform");
+
+    return id;
 }

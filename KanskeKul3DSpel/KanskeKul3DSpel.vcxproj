@@ -145,10 +145,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\External\Include\Imgui\imgui.cpp" />
+    <ClCompile Include="..\External\Include\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\External\Include\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\External\Include\Imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\External\Include\Imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\External\Include\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Src\Camera.cpp" />
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Camera.h" />
+    <ClInclude Include="Src\ImguiInit.h" />
     <ClInclude Include="Src\Shader.h" />
   </ItemGroup>
   <ItemGroup>

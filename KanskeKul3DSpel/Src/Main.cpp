@@ -1,6 +1,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Shader.h"
+#include "Camera.h"
+#include "ImguiInit.h"
 
 int main()
 {
@@ -39,6 +41,8 @@ int main()
          0,  1, 0
     };
 
+    ImGuiImpl::Initialize(window);
+
     GLuint vertexBuffer;
 
     glGenBuffers(1, &vertexBuffer);
@@ -51,6 +55,11 @@ int main()
     
     Program prog({ vertexShader, fragmentShader });
 
+    Camera cam(90.f, 1920, 1080);
+
+
+    //glUniformMatrix4fv(vpID, 1, GL_FALSE, &cam.getVP()[0][0]);
+    
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
     bool running = true;
@@ -59,23 +68,38 @@ int main()
     {
         glfwPollEvents();
 
+        ImGuiImpl::NewFrame();
+
+        ImGui::ShowDemoWindow();
+
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) || glfwWindowShouldClose(window))
             running = false;
 
+        //Clear
+        glClearColor(20, 100, 100, 255);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
+
+
+        //Draw
+        prog.use();
+
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glDisableVertexAttribArray(0);
 
-        prog.use();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+        //Display
         glfwSwapBuffers(window);
     }
 
+    ImGuiImpl::Shutdown();
 
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
