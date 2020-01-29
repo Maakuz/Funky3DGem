@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "ImguiInit.h"
+#include "Game.h"
 
 int main()
 {
@@ -52,6 +53,7 @@ int main()
     Shader vertexShader(SHADER_PATH "VS.glsl", ShaderType::Vertex);
     Shader fragmentShader(SHADER_PATH "PS.glsl", ShaderType::Fragment);
 
+    Game game(window);
     
     Program prog({ vertexShader, fragmentShader });
 
@@ -70,10 +72,11 @@ int main()
 
         ImGuiImpl::NewFrame();
 
-        ImGui::ShowDemoWindow();
-
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) || glfwWindowShouldClose(window))
             running = false;
+
+        //update
+        game.run(0);
 
         //Clear
         glClearColor(20, 100, 100, 255);

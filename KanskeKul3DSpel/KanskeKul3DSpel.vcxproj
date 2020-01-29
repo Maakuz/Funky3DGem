@@ -151,13 +151,23 @@
     <ClCompile Include="..\External\Include\Imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\External\Include\Imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\External\Include\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\External\Include\Imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="Src\Camera.cpp" />
+    <ClCompile Include="Src\Component\EntityManager.cpp" />
+    <ClCompile Include="Src\ConsoleWindow.cpp" />
+    <ClCompile Include="Src\Game.cpp" />
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Camera.h" />
+    <ClInclude Include="Src\Component\EntityManager.h" />
+    <ClInclude Include="Src\Component\TransformComp.h" />
+    <ClInclude Include="Src\ConsoleWindow.h" />
+    <ClInclude Include="Src\Component\Entity.h" />
+    <ClInclude Include="Src\Game.h" />
     <ClInclude Include="Src\ImguiInit.h" />
+    <ClInclude Include="Src\Player.h" />
     <ClInclude Include="Src\Shader.h" />
   </ItemGroup>
   <ItemGroup>
