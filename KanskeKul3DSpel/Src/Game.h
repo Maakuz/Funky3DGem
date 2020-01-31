@@ -14,4 +14,6 @@ public:
 private:
 	GLFWwindow* m_window;
 	EntityManager m_manager;
+
+	Entity m_player;
 };

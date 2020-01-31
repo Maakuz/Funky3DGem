@@ -1,11 +1,13 @@
 #include "Game.h"
 #include "ConsoleWindow.h"
+#include "Component/TransformComp.h"
 
-Game::Game(GLFWwindow* window)
+Game::Game(GLFWwindow* window) :
+    m_player(m_manager.createEntity())
 {
     m_window = window;
 
-
+    TransformComp::get().addTransform(m_player);
 }
 
 void Game::run(float deltaTime)
@@ -21,11 +23,6 @@ void Game::run(float deltaTime)
 
     if (consoleOn)
         ConsoleWindow::get().update(!consolePrev);
-
-    Entity e = m_manager.createEntity();
-
-    if (m_manager.isAlive(e))
-        printfCon("still alive woo");
 
     consolePrev = consoleOn;
 }

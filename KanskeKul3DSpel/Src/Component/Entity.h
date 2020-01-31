@@ -7,6 +7,7 @@ struct Entity
 {
     unsigned int id;
 
+    Entity() { id = 0; }
     Entity(unsigned int id) { this->id = id; }
 
     unsigned int index() { return id & ENTITY_INDEX_MASK; }

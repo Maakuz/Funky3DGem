@@ -1,14 +1,16 @@
 #pragma once
 #include <glm/glm.hpp>
-
+#include "Component/Entity.h"
 
 class Camera
 {
 public:
 	Camera(float fov, float screenWidth, float screenHeight);
-	virtual ~Camera() {};
+	virtual ~Camera() { delete m_attachedEntity; }
 
 	glm::mat4 getVP() const { return m_vp; }
+
+	void attachCamera(Entity entity);
 
 private:
 	glm::vec3 m_pos;
@@ -18,4 +20,6 @@ private:
 	glm::mat4 m_view;
 	glm::mat4 m_projection;
 	glm::mat4 m_vp;
+
+	Entity* m_attachedEntity;
 };
