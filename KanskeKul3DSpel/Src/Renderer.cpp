@@ -33,9 +33,9 @@ void Renderer::draw(const Camera* camera)
         glBindBuffer(GL_ARRAY_BUFFER, mesh.bufferID);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
         glDrawArrays(GL_TRIANGLES, 0, mesh.size);
-        glDisableVertexAttribArray(0);
     }
 
+    glDisableVertexAttribArray(0);
     s_modelQueue.clear();
 }
 

@@ -47,7 +47,11 @@ void Game::run(float deltaTime)
     if (glfwGetKey(m_window, GLFW_KEY_W))
         TransformComp::get().move(m_entities[0], glm::vec3(0, 0, -1));
 
-    Renderer::queueModel(m_entities[1]);
+    for (size_t i = 0; i < m_entities.size(); i++)
+    {
+        if (ModelComp::get().hasModel(m_entities[i]))
+            Renderer::queueModel(m_entities[i]);
+    }
     //m_camera.cameraDebug();
     debugEntities();
 }
@@ -108,9 +112,15 @@ void Game::debugEntities()
                     Columns(1);
                     TreePop();
                 }
-                Separator();
 
             }
+
+            else
+            {
+                if (Button(("Add transform" + std::to_string(i)).c_str()))
+                    transform->addTransform(entity);
+            }
+            Separator();
 
             if (model->hasModel(entity))
             {
@@ -126,6 +136,15 @@ void Game::debugEntities()
                     EndCombo();
                 }
             }
+
+            else
+            {
+                if (Button(("Add model " + std::to_string(i)).c_str()))
+                    model->addModel(entity);
+            }
+            Separator();
+            Separator();
+
         }
 
     }
