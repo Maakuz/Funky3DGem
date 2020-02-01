@@ -8,6 +8,8 @@ public:
 	Camera(float fov, float screenWidth, float screenHeight);
 	virtual ~Camera() { delete m_attachedEntity; }
 
+	void calculateVP();
+
 	glm::mat4 getVP() const { return m_vp; }
 
 	void attachCamera(Entity entity);

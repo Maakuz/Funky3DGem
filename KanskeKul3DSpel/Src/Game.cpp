@@ -3,7 +3,8 @@
 #include "Component/TransformComp.h"
 
 Game::Game(GLFWwindow* window) :
-    m_player(m_manager.createEntity())
+    m_player(m_manager.createEntity()),
+    m_camera(90.f, 1920, 1080)
 {
     m_window = window;
 

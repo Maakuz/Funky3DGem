@@ -1,7 +1,8 @@
-#include "Shader.h"
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include "Shader.h"
+#include "ConsoleWindow.h"
 
 Shader::Shader(std::string path, ShaderType type)
 {
@@ -125,7 +126,7 @@ GLuint Program::getUniformID(std::string name) const
         id = m_uniformLocations.at(name);
 
     else
-        printf("uniform");
+        printfCon("Uniform %s does not exist", name.c_str());
 
     return id;
 }

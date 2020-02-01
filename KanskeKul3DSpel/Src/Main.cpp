@@ -1,7 +1,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Shader.h"
-#include "Camera.h"
 #include "ImguiInit.h"
 #include "Game.h"
 
@@ -57,10 +56,7 @@ int main()
     
     Program prog({ vertexShader, fragmentShader });
 
-    Camera cam(90.f, 1920, 1080);
-
-
-    //glUniformMatrix4fv(vpID, 1, GL_FALSE, &cam.getVP()[0][0]);
+    prog.initializeUniformLocation("VP");
     
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
@@ -86,6 +82,7 @@ int main()
 
         //Draw
         prog.use();
+        glUniformMatrix4fv(prog.getUniformID("VP"), 1, GL_FALSE, &game.getCamera()->getVP()[0][0]);
 
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);

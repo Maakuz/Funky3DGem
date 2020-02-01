@@ -17,6 +17,10 @@ Camera::Camera(float fov, float screenWidth, float screenHeight)
     m_vp = m_projection * m_view;
 }
 
+void Camera::calculateVP()
+{
+}
+
 void Camera::attachCamera(Entity entity)
 {
     if (TransformComp::get().hasTransform(entity))
