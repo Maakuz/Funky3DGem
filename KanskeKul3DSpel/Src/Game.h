@@ -1,4 +1,5 @@
 #pragma once
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Component/EntityManager.h"
 #include "Camera.h"
@@ -17,5 +18,6 @@ private:
 	EntityManager m_manager;
 	Camera m_camera;
 
-	Entity m_player;
+	std::vector<Entity> m_entities;
+	void debugEntities();
 };

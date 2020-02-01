@@ -13,26 +13,32 @@ public:
 		return instance;
 	}
 
-
-
 	void addTransform(Entity entity);
 	void removeTransform(Entity entity);
 	bool hasTransform(Entity entity) { return m_dataMap.count(entity.id); }
-	glm::mat4 getTransformMat(Entity entity);
-	glm::vec3 getPosition(Entity entity);
+	glm::mat4 getTransformMat(Entity entity)  const;
+	glm::vec3 getPosition(Entity entity) const;
+	void setPosition(Entity entity, glm::vec3 pos);
+	glm::vec3 getScale(Entity entity) const;
+	void setScale(Entity entity, glm::vec3 scale);
+	glm::vec3 getRotation(Entity entity) const;
+	void setRotation(Entity entity, glm::vec3 rotation);
+	void move(Entity entity, glm::vec3 offset);
 
 private:
 	struct Transform
 	{
 		Entity owner;
 		glm::vec3 pos;
-		//rotation
-		//scale
+		glm::vec3 scale;
+		glm::vec3 rotation;
 
-		Transform(glm::vec3 pos, Entity owner)
+		Transform(Entity owner)
 		{
-			this->pos = pos;
 			this->owner = owner;
+			this->scale = {1, 1, 1};
+			this->pos = {0, 0, 0};
+			this->rotation = pos;
 		}
 	};
 

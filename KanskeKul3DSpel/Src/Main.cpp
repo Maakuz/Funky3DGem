@@ -1,8 +1,6 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include "Shader.h"
 #include "ImguiInit.h"
 #include "Game.h"
+#include "Renderer.h"
 
 int main()
 {
@@ -30,33 +28,13 @@ int main()
     if (glewInit() != GLEW_OK)
         return -2;
 
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, & VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-
-    GLfloat vertexData[] = 
-    {
-        -1, -1, 0,
-         1, -1, 0,
-         0,  1, 0
-    };
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
     ImGuiImpl::Initialize(window);
 
-    GLuint vertexBuffer;
-
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-
-    Shader vertexShader(SHADER_PATH "VS.glsl", ShaderType::Vertex);
-    Shader fragmentShader(SHADER_PATH "PS.glsl", ShaderType::Fragment);
-
     Game game(window);
-    
-    Program prog({ vertexShader, fragmentShader });
-
-    prog.initializeUniformLocation("VP");
+    Renderer renderer;
     
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
@@ -81,14 +59,8 @@ int main()
 
 
         //Draw
-        prog.use();
-        glUniformMatrix4fv(prog.getUniformID("VP"), 1, GL_FALSE, &game.getCamera()->getVP()[0][0]);
+        renderer.draw(game.getCamera());
 
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDisableVertexAttribArray(0);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

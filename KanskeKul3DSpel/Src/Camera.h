@@ -14,6 +14,8 @@ public:
 
 	void attachCamera(Entity entity);
 
+	void cameraDebug();
+
 private:
 	glm::vec3 m_pos;
 	glm::vec3 m_dir;
