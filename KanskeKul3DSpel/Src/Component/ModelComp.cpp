@@ -72,3 +72,28 @@ void ModelComp::setMesh(Entity entity, Meshes mesh)
     m_data[m_dataMap[entity.id]].mesh = mesh;
 }
 
+void ModelComp::printImguiDebug(Entity entity)
+{
+    using namespace ImGui;
+    if (hasModel(entity))
+    {
+        Text("Buffer ID: %d, vertices: %d", getBuffer(entity).bufferID, getBuffer(entity).size);
+        if (BeginCombo(("Mesh " + std::to_string(entity.id)).c_str(), std::to_string((int)getMesh(entity)).c_str()))
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                if (Selectable(std::to_string(j).c_str()))
+                    setMesh(entity, (Meshes)j);
+            }
+
+            EndCombo();
+        }
+    }
+
+    else
+    {
+        if (Button(("Add model " + std::to_string(entity.id)).c_str()))
+            addModel(entity);
+    }
+}
+

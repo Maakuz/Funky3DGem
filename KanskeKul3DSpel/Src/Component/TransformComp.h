@@ -25,6 +25,8 @@ public:
 	void setRotation(Entity entity, glm::vec3 rotation);
 	void move(Entity entity, glm::vec3 offset);
 
+	void printImguiDebug(Entity entity);
+
 private:
 	struct Transform
 	{

@@ -40,6 +40,8 @@ public:
 
 	void setMesh(Entity entity, Meshes mesh);
 
+	void printImguiDebug(Entity entity);
+
 private:
 	struct Model
 	{

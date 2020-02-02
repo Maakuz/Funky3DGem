@@ -106,3 +106,50 @@ void TransformComp::setRotation(Entity entity, glm::vec3 rotation)
 
     m_data[m_dataMap[entity.id]].rotation = rotation;
 }
+
+void TransformComp::printImguiDebug(Entity entity)
+{
+    using namespace ImGui;
+
+    if (hasTransform(entity))
+    {
+        Text("Transform");
+        glm::vec3 pos = getPosition(entity);
+        DragFloat3(("Position " + std::to_string(entity.id)).c_str(), &pos[0], 0.5);
+        setPosition(entity, pos);
+
+        glm::vec3 scale = getScale(entity);
+        DragFloat3(("Scale " + std::to_string(entity.id)).c_str(), &scale[0], 0.5);
+        setScale(entity, scale);
+
+        glm::vec3 rot = getRotation(entity);
+        DragFloat3(("Rotation " + std::to_string(entity.id)).c_str(), &rot[0], 0.1);
+        setRotation(entity, rot);
+
+        if (TreeNode(("matrix " + std::to_string(entity.id)).c_str()))
+        {
+            glm::mat4 transformMat = getTransformMat(entity);
+            for (int j = 0; j < 4; j++)
+            {
+                Columns(4);
+
+                for (int k = 0; k < 4; k++)
+                {
+                    Text("%f", transformMat[j][k]);
+                    NextColumn();
+                }
+
+            }
+
+            Columns(1);
+            TreePop();
+        }
+
+    }
+
+    else
+    {
+        if (Button(("Add transform" + std::to_string(entity.id)).c_str()))
+            addTransform(entity);
+    }
+}

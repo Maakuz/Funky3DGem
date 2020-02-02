@@ -4,13 +4,12 @@
 #include "ConsoleWindow.h"
 #include "GLFW/glfw3.h"
 
-constexpr float MOUSE_SPEED = 2;
-
 Camera::Camera(float fov, float screenWidth, float screenHeight)
 {
     m_attachedEntity = nullptr;
     m_height = screenHeight;
     m_width = screenWidth;
+    m_mouseSpeed = 4.f;
 
     m_pos = { 0, 0, 1 };
     m_forward = { 0, 0, -1 };
@@ -27,17 +26,14 @@ void Camera::trackMouse(float deltaTime, float mouseX, float mouseY)
 {
     static float yaw = 0;
     static float pitch = 0;
-    yaw += MOUSE_SPEED * deltaTime * mouseX;
-    pitch += MOUSE_SPEED * deltaTime * mouseY;
+    yaw += m_mouseSpeed * deltaTime * mouseX;
+    pitch += m_mouseSpeed * deltaTime * mouseY;
 
     if (pitch < -89)
         pitch = -89;
 
     else if (pitch > 89)
         pitch = 89;
-
-    printfCon("x: %f, y: %f", mouseX, mouseY);
-    printfCon("x: %f, y: %f", yaw, pitch);
 
     m_forward.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     m_forward.y = sin(glm::radians(pitch));
@@ -74,10 +70,10 @@ void Camera::attachCamera(Entity entity)
         printfCon("Entity %d has no tranform", entity.id);
 }
 
-void Camera::cameraDebug()
+void Camera::cameraDebug(bool* isOpen)
 {
     using namespace ImGui;
-    ImGui::Begin("Camera debug window!");
+    ImGui::Begin("Camera debug window!", isOpen);
 
     if (BeginTabBar("tabs"))
     {
@@ -107,6 +103,14 @@ void Camera::cameraDebug()
 
             ImGui::Text("Dir");
             ImGui::Text("x: %f, y: %f, z %f", m_forward.x, m_forward.y, m_forward.z);
+            EndTabItem();
+        }
+
+        if (BeginTabItem("Settings"))
+        {
+            ImGui::DragFloat("Sensitivity", &m_mouseSpeed);
+
+
             EndTabItem();
         }
 

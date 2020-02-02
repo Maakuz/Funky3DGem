@@ -15,7 +15,7 @@ public:
 
 	void attachCamera(Entity entity);
 
-	void cameraDebug();
+	void cameraDebug(bool* isOpen);
 
 private:
 	glm::vec3 m_pos;
@@ -27,9 +27,9 @@ private:
 	glm::mat4 m_projection;
 	glm::mat4 m_vp;
 
-	bool m_trackingMouse;
 	int m_width;
 	int m_height;
+	float m_mouseSpeed;
 
 	Entity* m_attachedEntity;
 };

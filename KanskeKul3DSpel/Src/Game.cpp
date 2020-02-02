@@ -2,7 +2,11 @@
 #include "ConsoleWindow.h"
 #include "Component/TransformComp.h"
 #include "Component/ModelComp.h"
+#include "Component/MovementComp.h"
 #include "Renderer.h"
+
+Game* Game::s_instance = nullptr;
+GLFWkeyfun Game::s_prevCallback;
 
 Game::Game(GLFWwindow* window) :
     m_camera(90.f, 1920, 1080)
@@ -10,6 +14,9 @@ Game::Game(GLFWwindow* window) :
     m_window = window;
     m_lockMouse = true;
     m_debugEntities = false;
+    m_consoleVisible = false;
+    s_instance = this;
+    m_debugCamera = false;
 
     ConsoleWindow::get().addCommand("toggleCursor", [&](Arguments args)->std::string
         {
@@ -17,9 +24,15 @@ Game::Game(GLFWwindow* window) :
             return "Togglesia";
         });
 
-    ConsoleWindow::get().addCommand("toggleEntityDebugger", [&](Arguments args)->std::string
+    ConsoleWindow::get().addCommand("toggleEntityWindow", [&](Arguments args)->std::string
         {
             m_debugEntities = !m_debugEntities;
+            return "Togglesia";
+        });
+
+    ConsoleWindow::get().addCommand("toggleCameraWindow", [&](Arguments args)->std::string
+        {
+            m_debugCamera = !m_debugCamera;
             return "Togglesia";
         });
 
@@ -36,22 +49,33 @@ Game::Game(GLFWwindow* window) :
     TransformComp::get().addTransform(e);
     ModelComp::get().addModel(e);
 
+    s_prevCallback = glfwSetKeyCallback(m_window, inputCallbackWrapper);
+
+    //Useful for getting geycodes
+    /*glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int code, int action, int mods) 
+        {
+            printfCon("%d", key);
+            printfCon("%d", code);
+        });*/
+
+    printfCon("removing things with dependencies is dangerous and needs to be addressed.");
+    printfCon("Example: remove transform from object with movement");
 }
 
 void Game::run(float deltaTime)
 {
-    static bool consoleOn = false;
     static bool consolePrev = false;
-    static bool prevKeyP = false;
-    if (glfwGetKey(m_window, GLFW_KEY_P) && !prevKeyP)
-        consoleOn = !consoleOn;
-
-    prevKeyP = glfwGetKey(m_window, GLFW_KEY_P);
-
-    if (consoleOn)
+    if (m_consoleVisible)
         ConsoleWindow::get().update(!consolePrev);
+    consolePrev = m_consoleVisible;
 
-    consolePrev = consoleOn;
+    if (glfwGetKey(m_window, GLFW_KEY_S))
+        TransformComp::get().move(m_entities[0], glm::vec3(0, 0, 1));
+
+    if (glfwGetKey(m_window, GLFW_KEY_W))
+        TransformComp::get().move(m_entities[0], glm::vec3(0, 0, -1));
+
+
 
     if (m_lockMouse)
     {
@@ -65,7 +89,6 @@ void Game::run(float deltaTime)
         prevY = y;
         glfwGetCursorPos(m_window, &x, &y);
 
-        //invert the inversion
         m_camera.trackMouse(deltaTime, x - prevX, prevY - y);
     }
 
@@ -78,22 +101,45 @@ void Game::run(float deltaTime)
 
     m_camera.calculateVP();
 
-    if (glfwGetKey(m_window, GLFW_KEY_S))
-        TransformComp::get().move(m_entities[0], glm::vec3(0, 0, 1));
-
-    if (glfwGetKey(m_window, GLFW_KEY_W))
-        TransformComp::get().move(m_entities[0], glm::vec3(0, 0, -1));
-
     for (size_t i = 0; i < m_entities.size(); i++)
     {
         if (ModelComp::get().hasModel(m_entities[i]))
             Renderer::queueModel(m_entities[i]);
     }
 
-    m_camera.cameraDebug();
+    if (m_debugCamera)
+        m_camera.cameraDebug(&m_debugCamera);
 
     if (m_debugEntities)
         debugEntities();
+}
+
+
+void Game::inputCallback(int key, int code, int action, int mods)
+{
+    if (action == GLFW_PRESS)
+    {
+        switch (key)
+        {
+        case GLFW_KEY_GRAVE_ACCENT:
+            m_consoleVisible = !m_consoleVisible;
+            break;
+
+        case GLFW_KEY_F1:
+            m_debugEntities = !m_debugEntities;
+            break;
+
+        case GLFW_KEY_F2:
+            m_debugCamera = !m_debugCamera;
+            break;
+
+        case GLFW_KEY_F3:
+            m_lockMouse = !m_lockMouse;
+            break;
+        default:
+            break;
+        }
+    }
 }
 
 void Game::debugEntities()
@@ -104,8 +150,9 @@ void Game::debugEntities()
 
     TransformComp* transform = &TransformComp::get();
     ModelComp* model = &ModelComp::get();
+    MovementComp* movement = &MovementComp::get();
 
-    Begin("Entity debugger");
+    Begin("Entity debugger", &m_debugEntities);
 
     if (Button("Add entity"))
     {
@@ -119,69 +166,17 @@ void Game::debugEntities()
         std::string label = std::to_string(i);
         if (CollapsingHeader(label.c_str()))
         {
-            if (transform->hasTransform(entity))
-            {
-                Text("Transform");
-                glm::vec3 pos = transform->getPosition(entity);
-                DragFloat3(("Position " + std::to_string(i)).c_str(), &pos[0], 0.5);
-                transform->setPosition(entity, pos);
+            
+            transform->printImguiDebug(entity);
 
-                glm::vec3 scale = transform->getScale(entity);
-                DragFloat3(("Scale " + std::to_string(i)).c_str(), &scale[0], 0.5);
-                transform->setScale(entity, scale);
-
-                glm::vec3 rot = transform->getRotation(entity);
-                DragFloat3(("Rotation " + std::to_string(i)).c_str(), &rot[0], 0.1);
-                transform->setRotation(entity, rot);
-
-                if (TreeNode(("matrix " + std::to_string(i)).c_str()))
-                {
-                    glm::mat4 transformMat = transform->getTransformMat(entity);
-                    for (int j = 0; j < 4; j++)
-                    {
-                        Columns(4);
-
-                        for (int k = 0; k < 4; k++)
-                        {
-                            Text("%f", transformMat[j][k]);
-                            NextColumn();
-                        }
-
-                    }
-
-                    Columns(1);
-                    TreePop();
-                }
-
-            }
-
-            else
-            {
-                if (Button(("Add transform" + std::to_string(i)).c_str()))
-                    transform->addTransform(entity);
-            }
             Separator();
 
-            if (model->hasModel(entity))
-            {
-                Text("Buffer ID: %d, vertices: %d", model->getBuffer(entity).bufferID, model->getBuffer(entity).size);
-                if (BeginCombo(("Mesh " + std::to_string(i)).c_str(), std::to_string((int)model->getMesh(entity)).c_str()))
-                {
-                    for (int j = 0; j < 2; j++)
-                    {
-                        if (Selectable(std::to_string(j).c_str()))
-                            model->setMesh(entity, (Meshes)j);
-                    }
+            model->printImguiDebug(entity);
 
-                    EndCombo();
-                }
-            }
+            Separator();
 
-            else
-            {
-                if (Button(("Add model " + std::to_string(i)).c_str()))
-                    model->addModel(entity);
-            }
+            movement->printImguiDebug(entity);
+
             Separator();
             Separator();
 
