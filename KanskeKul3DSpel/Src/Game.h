@@ -18,6 +18,9 @@ private:
 	EntityManager m_manager;
 	Camera m_camera;
 
+	bool m_lockMouse;
+	bool m_debugEntities;
+
 	std::vector<Entity> m_entities;
 	void debugEntities();
 };

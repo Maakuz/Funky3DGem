@@ -10,7 +10,7 @@ inline void addData(std::unordered_map<unsigned int, unsigned int>& map, std::ve
 {
     if (map.count(entity.id))
     {
-        printfCon("Entity %d has already a tranform", entity.id);
+        printfCon("Entity %d has component", entity.id);
         return;
     }
 
@@ -26,7 +26,7 @@ inline void removeData(std::unordered_map<unsigned int, unsigned int>& map, std:
 {
     if (!map.count(entity.id))
     {
-        printfCon("Entity %d has no tranform", entity.id);
+        printfCon("Entity %d does not have this component", entity.id);
         return;
     }
 

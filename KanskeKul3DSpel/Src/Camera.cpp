@@ -2,19 +2,51 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Component/TransformComp.h"
 #include "ConsoleWindow.h"
+#include "GLFW/glfw3.h"
+
+constexpr float MOUSE_SPEED = 2;
 
 Camera::Camera(float fov, float screenWidth, float screenHeight)
 {
     m_attachedEntity = nullptr;
+    m_height = screenHeight;
+    m_width = screenWidth;
 
     m_pos = { 0, 0, 1 };
-    m_dir = {0, 0, -1};
-    m_up = {0, 1, 0};
+    m_forward = { 0, 0, -1 };
+    m_up = { 0, 1, 0 };
+    m_right = {1, 0, 0};
 
-    m_view = glm::lookAt(m_pos, m_dir, m_up);
+    m_view = glm::lookAt(m_pos, m_forward, m_up);
     m_projection = glm::perspective(glm::radians(90.f), screenWidth / screenHeight, 0.1f, 100.f);
 
     m_vp = m_projection * m_view;
+}
+
+void Camera::trackMouse(float deltaTime, float mouseX, float mouseY)
+{
+    static float yaw = 0;
+    static float pitch = 0;
+    yaw += MOUSE_SPEED * deltaTime * mouseX;
+    pitch += MOUSE_SPEED * deltaTime * mouseY;
+
+    if (pitch < -89)
+        pitch = -89;
+
+    else if (pitch > 89)
+        pitch = 89;
+
+    printfCon("x: %f, y: %f", mouseX, mouseY);
+    printfCon("x: %f, y: %f", yaw, pitch);
+
+    m_forward.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    m_forward.y = sin(glm::radians(pitch));
+    m_forward.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    glm::normalize(m_forward);
+
+    m_right = glm::cross(m_forward, m_up);
+
+    //m_up = glm::cross(m_right, m_forward);
 }
 
 void Camera::calculateVP()
@@ -24,7 +56,7 @@ void Camera::calculateVP()
 
 
 
-    m_view = glm::lookAt(m_pos, m_dir, m_up);
+    m_view = glm::lookAt(m_pos, m_pos + m_forward, m_up);
 
     m_vp = m_projection * m_view;
 
@@ -57,8 +89,11 @@ void Camera::cameraDebug()
             ImGui::Text("Up");
             ImGui::Text("x: %f, y: %f, z %f", m_up.x, m_up.y, m_up.z);
 
-            ImGui::Text("Dir");
-            ImGui::Text("x: %f, y: %f, z %f", m_dir.x, m_dir.y, m_dir.z);
+            ImGui::Text("Forward");
+            ImGui::Text("x: %f, y: %f, z %f", m_forward.x, m_forward.y, m_forward.z);
+
+            ImGui::Text("Right");
+            ImGui::Text("x: %f, y: %f, z %f", m_right.x, m_right.y, m_right.z);
             EndTabItem();
         }
 
@@ -71,7 +106,7 @@ void Camera::cameraDebug()
             ImGui::Text("x: %f, y: %f, z %f", m_up.x, m_up.y, m_up.z);
 
             ImGui::Text("Dir");
-            ImGui::Text("x: %f, y: %f, z %f", m_dir.x, m_dir.y, m_dir.z);
+            ImGui::Text("x: %f, y: %f, z %f", m_forward.x, m_forward.y, m_forward.z);
             EndTabItem();
         }
 

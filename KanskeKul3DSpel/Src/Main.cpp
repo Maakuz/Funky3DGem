@@ -28,6 +28,8 @@ int main()
     if (glewInit() != GLEW_OK)
         return -2;
 
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
@@ -35,8 +37,8 @@ int main()
 
     Game game(window);
     Renderer renderer;
-    
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
 
     bool running = true;
 
@@ -49,8 +51,16 @@ int main()
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) || glfwWindowShouldClose(window))
             running = false;
 
+        //DT
+        static double dt = 0;
+        static double last = 0;
+        static double time = 0;
+        last = time;
+        time = glfwGetTime();
+        dt = time - last;
+
         //update
-        game.run(0);
+        game.run(dt);
 
         //Clear
         glClearColor(20, 100, 100, 255);

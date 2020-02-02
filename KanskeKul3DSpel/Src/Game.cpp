@@ -8,6 +8,20 @@ Game::Game(GLFWwindow* window) :
     m_camera(90.f, 1920, 1080)
 {
     m_window = window;
+    m_lockMouse = true;
+    m_debugEntities = false;
+
+    ConsoleWindow::get().addCommand("toggleCursor", [&](Arguments args)->std::string
+        {
+            m_lockMouse = !m_lockMouse;
+            return "Togglesia";
+        });
+
+    ConsoleWindow::get().addCommand("toggleEntityDebugger", [&](Arguments args)->std::string
+        {
+            m_debugEntities = !m_debugEntities;
+            return "Togglesia";
+        });
 
     Entity e = m_manager.createEntity();
     m_entities.push_back(e);
@@ -39,6 +53,29 @@ void Game::run(float deltaTime)
 
     consolePrev = consoleOn;
 
+    if (m_lockMouse)
+    {
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+
+        static double x, y;
+        static double prevX, prevY;
+        prevX = x;
+        prevY = y;
+        glfwGetCursorPos(m_window, &x, &y);
+
+        //invert the inversion
+        m_camera.trackMouse(deltaTime, x - prevX, prevY - y);
+    }
+
+    else
+    {
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
+    }
+
     m_camera.calculateVP();
 
     if (glfwGetKey(m_window, GLFW_KEY_S))
@@ -52,15 +89,18 @@ void Game::run(float deltaTime)
         if (ModelComp::get().hasModel(m_entities[i]))
             Renderer::queueModel(m_entities[i]);
     }
-    //m_camera.cameraDebug();
-    debugEntities();
+
+    m_camera.cameraDebug();
+
+    if (m_debugEntities)
+        debugEntities();
 }
 
 void Game::debugEntities()
 {
     using namespace ImGui;
 
-    ShowDemoWindow();
+    //ShowDemoWindow();
 
     TransformComp* transform = &TransformComp::get();
     ModelComp* model = &ModelComp::get();
