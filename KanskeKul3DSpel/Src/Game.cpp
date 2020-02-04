@@ -3,13 +3,13 @@
 #include "Component/TransformComp.h"
 #include "Component/ModelComp.h"
 #include "Component/MovementComp.h"
+#include "Component/MovementInputComp.h"
 #include "Renderer.h"
 
 Game* Game::s_instance = nullptr;
 GLFWkeyfun Game::s_prevCallback;
 
-Game::Game(GLFWwindow* window) :
-    m_camera(90.f, 1920, 1080)
+Game::Game(GLFWwindow* window)
 {
     m_window = window;
     m_lockMouse = true;
@@ -17,6 +17,8 @@ Game::Game(GLFWwindow* window) :
     m_consoleVisible = false;
     s_instance = this;
     m_debugCamera = false;
+
+    Camera::get().initialize(90, 1920, 1080);
 
     ConsoleWindow::get().addCommand("toggleCursor", [&](Arguments args)->std::string
         {
@@ -41,7 +43,7 @@ Game::Game(GLFWwindow* window) :
 
     TransformComp::get().addTransform(e);
     TransformComp::get().setPosition(e, { 0, 0, 1 });
-    m_camera.attachCamera(e);
+    Camera::get().attachCamera(e);
 
     e = m_manager.createEntity();
     m_entities.push_back(e);
@@ -69,13 +71,8 @@ void Game::run(float deltaTime)
         ConsoleWindow::get().update(!consolePrev);
     consolePrev = m_consoleVisible;
 
-    if (glfwGetKey(m_window, GLFW_KEY_S))
-        TransformComp::get().move(m_entities[0], glm::vec3(0, 0, 1));
-
-    if (glfwGetKey(m_window, GLFW_KEY_W))
-        TransformComp::get().move(m_entities[0], glm::vec3(0, 0, -1));
-
-
+    MovementInputComp::get().handleInputs(m_window);
+    MovementComp::get().applyToTransform(deltaTime);
 
     if (m_lockMouse)
     {
@@ -89,7 +86,7 @@ void Game::run(float deltaTime)
         prevY = y;
         glfwGetCursorPos(m_window, &x, &y);
 
-        m_camera.trackMouse(deltaTime, x - prevX, prevY - y);
+        Camera::get().trackMouse(deltaTime, x - prevX, prevY - y);
     }
 
     else
@@ -99,7 +96,7 @@ void Game::run(float deltaTime)
             glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
     }
 
-    m_camera.calculateVP();
+    Camera::get().calculateVP();
 
     for (size_t i = 0; i < m_entities.size(); i++)
     {
@@ -108,7 +105,7 @@ void Game::run(float deltaTime)
     }
 
     if (m_debugCamera)
-        m_camera.cameraDebug(&m_debugCamera);
+        Camera::get().cameraDebug(&m_debugCamera);
 
     if (m_debugEntities)
         debugEntities();
@@ -151,6 +148,7 @@ void Game::debugEntities()
     TransformComp* transform = &TransformComp::get();
     ModelComp* model = &ModelComp::get();
     MovementComp* movement = &MovementComp::get();
+    MovementInputComp* movementInput = &MovementInputComp::get();
 
     Begin("Entity debugger", &m_debugEntities);
 
@@ -177,6 +175,9 @@ void Game::debugEntities()
 
             movement->printImguiDebug(entity);
 
+            Separator();
+
+            movementInput->printImguiDebug(entity);
             Separator();
             Separator();
 

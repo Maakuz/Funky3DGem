@@ -12,11 +12,9 @@ public:
 
 	void run(float deltaTime);
 
-	const Camera* getCamera() const { return &m_camera; }
 private:
 	GLFWwindow* m_window;
 	EntityManager m_manager;
-	Camera m_camera;
 
 	bool m_lockMouse;
 	bool m_debugEntities;

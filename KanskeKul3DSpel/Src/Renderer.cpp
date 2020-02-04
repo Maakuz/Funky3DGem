@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Component/ModelComp.h"
 #include "Component/TransformComp.h"
+#include "Camera.h"
 
 std::vector<Entity> Renderer::s_modelQueue;
 
@@ -17,11 +18,11 @@ Renderer::Renderer():
     glBindVertexArray(VertexArrayID);
 }
 
-void Renderer::draw(const Camera* camera)
+void Renderer::draw()
 {
     m_program.use();
 
-    glUniformMatrix4fv(m_program.getUniformID("VP"), 1, GL_FALSE, &camera->getVP()[0][0]);
+    glUniformMatrix4fv(m_program.getUniformID("VP"), 1, GL_FALSE, &Camera::get().getVP()[0][0]);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 

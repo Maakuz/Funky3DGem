@@ -5,17 +5,28 @@
 class Camera
 {
 public:
-	Camera(float fov, float screenWidth, float screenHeight);
+	static Camera& get()
+	{
+		static Camera instance;
+		return instance;
+	}
+
+	void initialize(float fov, float screenWidth, float screenHeight);
 	virtual ~Camera() { delete m_attachedEntity; }
 
 	void trackMouse(float deltaTime, float mouseX, float mouseY);
 	void calculateVP();
 
+	glm::vec3 getForward() const { return m_forward; }
+	glm::vec3 getRight() const { return m_right; }
+	glm::mat4 getView() const { return m_view; }
 	glm::mat4 getVP() const { return m_vp; }
 
 	void attachCamera(Entity entity);
 
 	void cameraDebug(bool* isOpen);
+
+	Entity* getAttachedEntity() const { return m_attachedEntity; }
 
 private:
 	glm::vec3 m_pos;
@@ -32,4 +43,6 @@ private:
 	float m_mouseSpeed;
 
 	Entity* m_attachedEntity;
+
+	Camera();
 };

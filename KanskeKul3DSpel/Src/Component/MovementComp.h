@@ -33,6 +33,9 @@ public:
 	bool hasMovement(Entity entity) { return m_dataMap.count(entity.id); }
 	void addAcceleration(Entity entity, glm::vec3 acceleration);
 
+	glm::vec3 getAcceleration(Entity entity) const;
+	glm::vec3 getVelocity(Entity entity) const;
+
 	void applyToTransform(float deltaTime);
 
 	void printImguiDebug(Entity entity);

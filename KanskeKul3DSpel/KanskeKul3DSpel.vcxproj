@@ -157,6 +157,7 @@
     <ClCompile Include="Src\Component\LightComp.cpp" />
     <ClCompile Include="Src\Component\ModelComp.cpp" />
     <ClCompile Include="Src\Component\MovementComp.cpp" />
+    <ClCompile Include="Src\Component\MovementInputComp.cpp" />
     <ClCompile Include="Src\Component\TransformComp.cpp" />
     <ClCompile Include="Src\ConsoleWindow.cpp" />
     <ClCompile Include="Src\Game.cpp" />

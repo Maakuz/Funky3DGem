@@ -1,7 +1,7 @@
 #pragma once
 #include <GL/glew.h>
 #include "Shader.h"
-#include "Camera.h"
+#include "Component/Entity.h"
 
 class Renderer
 {
@@ -9,7 +9,7 @@ public:
 	Renderer();
 	virtual ~Renderer() {};
 
-	void draw(const Camera* camera);
+	void draw();
 
 	static void queueModel(Entity entity);
 

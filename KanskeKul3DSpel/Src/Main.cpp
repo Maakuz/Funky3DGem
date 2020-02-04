@@ -69,7 +69,7 @@ int main()
 
 
         //Draw
-        renderer.draw(game.getCamera());
+        renderer.draw();
 
 
         ImGui::Render();

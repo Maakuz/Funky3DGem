@@ -4,7 +4,24 @@
 #include "ConsoleWindow.h"
 #include "GLFW/glfw3.h"
 
-Camera::Camera(float fov, float screenWidth, float screenHeight)
+Camera::Camera()
+{
+    m_attachedEntity = nullptr;
+    m_height = 0;
+    m_width = 0;
+    m_mouseSpeed = 4.f;
+
+    m_pos = { 0, 0, 1 };
+    m_forward = { 0, 0, -1 };
+    m_up = { 0, 1, 0 };
+    m_right = { 1, 0, 0 };
+
+    m_view = glm::identity<glm::mat4>();
+    m_projection = m_view;
+    m_vp = m_view;
+}
+
+void Camera::initialize(float fov, float screenWidth, float screenHeight)
 {
     m_attachedEntity = nullptr;
     m_height = screenHeight;
@@ -14,7 +31,7 @@ Camera::Camera(float fov, float screenWidth, float screenHeight)
     m_pos = { 0, 0, 1 };
     m_forward = { 0, 0, -1 };
     m_up = { 0, 1, 0 };
-    m_right = {1, 0, 0};
+    m_right = { 1, 0, 0 };
 
     m_view = glm::lookAt(m_pos, m_forward, m_up);
     m_projection = glm::perspective(glm::radians(90.f), screenWidth / screenHeight, 0.1f, 100.f);
@@ -41,8 +58,6 @@ void Camera::trackMouse(float deltaTime, float mouseX, float mouseY)
     glm::normalize(m_forward);
 
     m_right = glm::cross(m_forward, m_up);
-
-    //m_up = glm::cross(m_right, m_forward);
 }
 
 void Camera::calculateVP()
