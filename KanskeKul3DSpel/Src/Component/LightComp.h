@@ -2,9 +2,10 @@
 #include <vector>
 #include <unordered_map>
 #include "glm/glm.hpp"
-#include "Entity.h"
+#include "System.h"
 
-class LightComp
+
+class LightComp : System
 {
 public:
 	struct DirectionalLight
@@ -27,14 +28,16 @@ public:
 		return instance;
 	}
 
-	void addLight(Entity entity);
-	void removeLight(Entity entity);
-	bool hasLight(Entity entity) { return m_dataMap.count(entity.id); }
+	void addComponent(Entity entity);
+	void removeComponent(Entity entity);
+	bool hasComponent(Entity entity) { return m_dataMap.count(entity.id); }
 	DirectionalLight getLight(Entity entity) const;
 
 	void setLight(Entity entity, DirectionalLight light);
 	void setDir(Entity entity, glm::vec3 dir);
 	void setColor(Entity entity, glm::vec3 color);
+
+	void printImguiDebug(Entity entity);
 
 private:
 	std::vector<DirectionalLight> m_data;

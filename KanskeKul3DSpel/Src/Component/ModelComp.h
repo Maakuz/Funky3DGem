@@ -7,7 +7,6 @@ constexpr unsigned int NO_MESH = 404;
 
 enum class Meshes
 {
-	Triangle,
 	Cube
 };
 
@@ -19,10 +18,12 @@ public:
 		MeshBuffer(unsigned int bufferID = NO_MESH, unsigned int size = 0)
 		{
 			this->size = size;
-			this->bufferID = bufferID;
+			this->vertexBufferID = bufferID;
+			this->normalBufferID = bufferID;
 		}
 
-		unsigned int bufferID;
+		unsigned int vertexBufferID;
+		unsigned int normalBufferID;
 		unsigned int size;
 	};
 

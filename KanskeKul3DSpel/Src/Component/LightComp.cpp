@@ -2,12 +2,12 @@
 #include "DataTemplate.h"
 
 
-void LightComp::addLight(Entity entity)
+void LightComp::addComponent(Entity entity)
 {
     addData<DirectionalLight>(m_dataMap, m_data, entity, DirectionalLight(entity));
 }
 
-void LightComp::removeLight(Entity entity)
+void LightComp::removeComponent(Entity entity)
 {
     removeData<DirectionalLight>(m_dataMap, m_data, entity);
 }
@@ -54,6 +54,27 @@ void LightComp::setColor(Entity entity, glm::vec3 color)
     }
 
     m_data[m_dataMap.at(entity.id)].color = color;
+}
+
+void LightComp::printImguiDebug(Entity entity)
+{
+    using namespace ImGui;
+
+    if (hasComponent(entity))
+    {
+        DragFloat3(("Direction " + std::to_string(entity.id)).c_str(), &m_data[m_dataMap[entity.id]].dir.x);
+        DragFloat3(("Color " + std::to_string(entity.id)).c_str(), &m_data[m_dataMap[entity.id]].color.x);
+
+        if (Button(("Normalize dir " + std::to_string(entity.id)).c_str()))
+            m_data[m_dataMap[entity.id]].dir = glm::normalize(m_data[m_dataMap[entity.id]].dir);
+    }
+
+    else
+    {
+        if (Button(("Add light " + std::to_string(entity.id)).c_str()))
+            addComponent(entity);
+    }
+
 }
 
 

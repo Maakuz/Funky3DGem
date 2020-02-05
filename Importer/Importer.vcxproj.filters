@@ -15,7 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Importer.h">
+    <ClCompile Include="Src\Importer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\Importer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,6 +4,7 @@
 #include "Component/ModelComp.h"
 #include "Component/MovementComp.h"
 #include "Component/MovementInputComp.h"
+#include "Component/LightComp.h"
 #include "Renderer.h"
 
 Game* Game::s_instance = nullptr;
@@ -44,6 +45,8 @@ Game::Game(GLFWwindow* window)
     TransformComp::get().addTransform(e);
     TransformComp::get().setPosition(e, { 0, 0, 1 });
     Camera::get().attachCamera(e);
+    MovementComp::get().addMovement(e);
+    MovementInputComp::get().addInput(e);
 
     e = m_manager.createEntity();
     m_entities.push_back(e);
@@ -149,6 +152,7 @@ void Game::debugEntities()
     ModelComp* model = &ModelComp::get();
     MovementComp* movement = &MovementComp::get();
     MovementInputComp* movementInput = &MovementInputComp::get();
+    LightComp* light = &LightComp::get();
 
     Begin("Entity debugger", &m_debugEntities);
 
@@ -178,6 +182,11 @@ void Game::debugEntities()
             Separator();
 
             movementInput->printImguiDebug(entity);
+
+            Separator();
+
+            light->printImguiDebug(entity);
+
             Separator();
             Separator();
 

@@ -2,30 +2,22 @@
 #include "ModelComp.h"
 #include "DataTemplate.h"
 #include "TransformComp.h"
-#include "Cube.h"
+#include "Importer/Importer.h"
 
 ModelComp::ModelComp()
 {
-    GLfloat vertexData[] =
-    {
-        -1, -1, 0,
-         1, -1, 0,
-         0,  1, 0
-    };
+    Importer::Model mod = Importer::loadModelFromFile("../Resources/Models/cube.mop");
 
-    MeshBuffer mesh(0, 3);
+    MeshBuffer mesh(1, mod.vertices.size());
 
-    m_meshes.emplace(Meshes::Triangle, mesh);
-    glGenBuffers(1, &m_meshes[Meshes::Triangle].bufferID);
-    glBindBuffer(GL_ARRAY_BUFFER, m_meshes[Meshes::Triangle].bufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), &vertexData, GL_STATIC_DRAW);
+    m_meshes.emplace(Meshes::Cube, mesh);
+    glGenBuffers(1, &m_meshes[Meshes::Cube].vertexBufferID);
+    glBindBuffer(GL_ARRAY_BUFFER, m_meshes[Meshes::Cube].vertexBufferID);
+    glBufferData(GL_ARRAY_BUFFER, 12 * mod.vertices.size(), &mod.vertices[0], GL_STATIC_DRAW);
 
-    MeshBuffer mesh2(1, cubeVertices);
-
-    m_meshes.emplace(Meshes::Cube, mesh2);
-    glGenBuffers(1, &m_meshes[Meshes::Cube].bufferID);
-    glBindBuffer(GL_ARRAY_BUFFER, m_meshes[Meshes::Cube].bufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), &cube, GL_STATIC_DRAW);
+    glGenBuffers(1, &m_meshes[Meshes::Cube].normalBufferID);
+    glBindBuffer(GL_ARRAY_BUFFER, m_meshes[Meshes::Cube].normalBufferID);
+    glBufferData(GL_ARRAY_BUFFER, 12 * mod.normals.size(), &mod.normals[0], GL_STATIC_DRAW);
 }
 
 void ModelComp::addModel(Entity entity)
@@ -77,10 +69,10 @@ void ModelComp::printImguiDebug(Entity entity)
     using namespace ImGui;
     if (hasModel(entity))
     {
-        Text("Buffer ID: %d, vertices: %d", getBuffer(entity).bufferID, getBuffer(entity).size);
+        Text("Buffer ID: %d, vertices: %d", getBuffer(entity).vertexBufferID, getBuffer(entity).size);
         if (BeginCombo(("Mesh " + std::to_string(entity.id)).c_str(), std::to_string((int)getMesh(entity)).c_str()))
         {
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < 1; j++)
             {
                 if (Selectable(std::to_string(j).c_str()))
                     setMesh(entity, (Meshes)j);
