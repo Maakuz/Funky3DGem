@@ -119,19 +119,19 @@ void TransformComp::setRotation(Entity entity, glm::vec3 rotation)
 glm::vec3 TransformComp::getRight(Entity entity) const
 {
     glm::mat4 transform = getTransformMat(entity);
-    return glm::normalize(glm::vec3(transform[0][0], -transform[1][0], transform[2][0]));
+    return glm::normalize(glm::vec3(transform[0][0], transform[0][1], transform[0][2]));
 }
 
 glm::vec3 TransformComp::getForward(Entity entity) const
 {
     glm::mat4 transform = getTransformMat(entity);
-    return glm::normalize(glm::vec3(transform[0][2], transform[1][2], -transform[2][2]));
+    return glm::normalize(glm::vec3(transform[2][0], transform[2][1], transform[2][2]));
 }
 
 glm::vec3 TransformComp::getUp(Entity entity) const
 {
     glm::mat4 transform = getTransformMat(entity);
-    return glm::normalize(glm::vec3(transform[0][1], transform[1][1], transform[2][1]));
+    return glm::normalize(glm::vec3(transform[1][0], transform[1][1], transform[1][2]));
 }
 
 
