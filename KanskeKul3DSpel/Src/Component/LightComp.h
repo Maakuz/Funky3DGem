@@ -10,13 +10,11 @@ class LightComp : System
 public:
 	struct DirectionalLight
 	{
-		Entity owner;
 		glm::vec3 dir;
 		glm::vec3 color;
 
 		DirectionalLight(Entity owner)
 		{
-			this->owner = owner;
 			dir = {0, -1, 0};
 			color = {1, 1, 1};
 		}
@@ -37,9 +35,12 @@ public:
 	void setDir(Entity entity, glm::vec3 dir);
 	void setColor(Entity entity, glm::vec3 color);
 
+	const std::vector<DirectionalLight>* getDirectionalLights() const { return &m_data; }
+
 	void printImguiDebug(Entity entity);
 
 private:
+	std::vector<Entity> m_owner;
 	std::vector<DirectionalLight> m_data;
 	std::unordered_map<unsigned int, unsigned int> m_dataMap;
 };

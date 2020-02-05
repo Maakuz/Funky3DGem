@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Component/ModelComp.h"
 #include "Component/TransformComp.h"
+#include "Component/LightComp.h"
 #include "Camera.h"
 
 std::vector<Entity> Renderer::s_modelQueue;

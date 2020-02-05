@@ -5,11 +5,15 @@
 void LightComp::addComponent(Entity entity)
 {
     addData<DirectionalLight>(m_dataMap, m_data, entity, DirectionalLight(entity));
+    m_owner.push_back(entity);
 }
 
 void LightComp::removeComponent(Entity entity)
 {
     removeData<DirectionalLight>(m_dataMap, m_data, entity);
+
+    m_owner[entity.id] = m_owner.back();
+    m_owner.pop_back();
 }
 
 LightComp::DirectionalLight LightComp::getLight(Entity entity) const
