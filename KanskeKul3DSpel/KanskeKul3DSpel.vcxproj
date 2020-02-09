@@ -102,12 +102,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>F:\SPELTJOSAN\KanskeKul3DSpel\External\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Lib\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>F:\SPELTJOSAN\KanskeKul3DSpel\External\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Importer.lib;opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Importer.lib;opengl32.lib;glew32.lib;glfw3.lib;Bullet\Debug\BulletDynamics_Debug.lib;Bullet\Debug\BulletCollision_Debug.lib;Bullet\Debug\LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -153,12 +154,14 @@
     <ClCompile Include="..\External\Include\Imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\External\Include\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\External\Include\Imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="Src\BulletWrapper.cpp" />
     <ClCompile Include="Src\Camera.cpp" />
     <ClCompile Include="Src\Component\EntityManager.cpp" />
     <ClCompile Include="Src\Component\LightComp.cpp" />
     <ClCompile Include="Src\Component\ModelComp.cpp" />
     <ClCompile Include="Src\Component\MovementComp.cpp" />
     <ClCompile Include="Src\Component\MovementInputComp.cpp" />
+    <ClCompile Include="Src\Component\PhysicsComp.cpp" />
     <ClCompile Include="Src\Component\TransformComp.cpp" />
     <ClCompile Include="Src\ConsoleWindow.cpp" />
     <ClCompile Include="Src\Game.cpp" />
@@ -168,6 +171,7 @@
     <ClCompile Include="Src\UnorderedErase.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\BulletWrapper.h" />
     <ClInclude Include="Src\Camera.h" />
     <ClInclude Include="Src\Component\DataTemplate.h" />
     <ClInclude Include="Src\Component\EntityManager.h" />
@@ -175,6 +179,7 @@
     <ClInclude Include="Src\Component\MovementInputComp.h" />
     <ClInclude Include="Src\Component\LightComp.h" />
     <ClInclude Include="Src\Component\ModelComp.h" />
+    <ClInclude Include="Src\Component\PhysicsComp.h" />
     <ClInclude Include="Src\Component\System.h" />
     <ClInclude Include="Src\Component\TransformComp.h" />
     <ClInclude Include="Src\ConsoleWindow.h" />

@@ -1,14 +1,34 @@
 #version 410 core
+#define MAX_LIGHTS 20
 
-layout(location = 0) in vec3 pos;
-layout(location = 1) in vec3 normal;
+in VS_OUT
+{
+    vec3 pos;
+    vec3 normal;
+} ps_in;
+
+struct DirLight
+{
+    vec4 dir;
+    vec4 color;
+};
+
+uniform int DIR_LIGHT_COUNT;
+
+//Data formatted as
+//arr[0] = direction
+//arr[1] = color
+uniform vec3 DIR_LIGHTS[MAX_LIGHTS * 2];
 
 out vec3 color;
 void main()
 {
-    vec3 light = vec3(0, 1, 0);
+    vec3 diffuse = vec3(0, 0, 0);
+    for (int i = 0; i < DIR_LIGHT_COUNT * 2; i++)
+    {
+        diffuse += dot(-DIR_LIGHTS[i], ps_in.normal.xyz) * DIR_LIGHTS[i + 1];
+    }
 
-    float diffuse = dot(light, normal.xyz);
 
-    color = vec3(0, 1, 0.2) * diffuse;
+    color = diffuse;
 }

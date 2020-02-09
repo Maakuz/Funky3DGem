@@ -8,9 +8,9 @@ MovementComp::MovementComp()
     m_friction = 0.8f;
 }
 
-void MovementComp::addMovement(Entity entity)
+void MovementComp::addComponent(Entity entity)
 {
-    if (!TransformComp::get().hasTransform(entity))
+    if (!TransformComp::get().hasComponent(entity))
     {
         printfCon("Entity need transform to have movement", entity.id);
         return;
@@ -19,7 +19,7 @@ void MovementComp::addMovement(Entity entity)
     addData<Movement>(m_dataMap, m_data, entity, Movement(entity));
 }
 
-void MovementComp::removeMovement(Entity entity)
+void MovementComp::removeComponent(Entity entity)
 {
     removeData<Movement>(m_dataMap, m_data, entity);
 }
@@ -57,7 +57,7 @@ void MovementComp::printImguiDebug(Entity entity)
 {
     using namespace ImGui;
 
-    if (hasMovement(entity))
+    if (hasComponent(entity))
     {
         glm::vec3 vel = getVelocity(entity);
         glm::vec3 acc = getAcceleration(entity);
@@ -75,6 +75,6 @@ void MovementComp::printImguiDebug(Entity entity)
     else
     {
         if (Button(("Add Movement " + std::to_string(entity.id)).c_str()))
-            addMovement(entity);
+            addComponent(entity);
     }
 }

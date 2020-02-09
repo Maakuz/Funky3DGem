@@ -42,17 +42,17 @@ Game::Game(GLFWwindow* window)
     Entity e = m_manager.createEntity();
     m_entities.push_back(e);
 
-    TransformComp::get().addTransform(e);
+    TransformComp::get().addComponent(e);
     TransformComp::get().setPosition(e, { 0, 0, 1 });
     Camera::get().attachCamera(e);
-    MovementComp::get().addMovement(e);
+    MovementComp::get().addComponent(e);
     MovementInputComp::get().addInput(e);
 
     e = m_manager.createEntity();
     m_entities.push_back(e);
 
-    TransformComp::get().addTransform(e);
-    ModelComp::get().addModel(e);
+    TransformComp::get().addComponent(e);
+    ModelComp::get().addComponent(e);
 
     s_prevCallback = glfwSetKeyCallback(m_window, inputCallbackWrapper);
 
@@ -62,6 +62,7 @@ Game::Game(GLFWwindow* window)
             printfCon("%d", key);
             printfCon("%d", code);
         });*/
+
 
     printfCon("removing things with dependencies is dangerous and needs to be addressed.");
     printfCon("Example: remove transform from object with movement");
@@ -103,7 +104,7 @@ void Game::run(float deltaTime)
 
     for (size_t i = 0; i < m_entities.size(); i++)
     {
-        if (ModelComp::get().hasModel(m_entities[i]))
+        if (ModelComp::get().hasComponent(m_entities[i]))
             Renderer::queueModel(m_entities[i]);
     }
 

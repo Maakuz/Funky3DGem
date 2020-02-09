@@ -6,7 +6,7 @@
 
 void MovementInputComp::addInput(Entity entity)
 {
-    if (!MovementComp::get().hasMovement(entity))
+    if (!MovementComp::get().hasComponent(entity))
     {
         printfCon("Entity need transform to have movement", entity.id);
         return;

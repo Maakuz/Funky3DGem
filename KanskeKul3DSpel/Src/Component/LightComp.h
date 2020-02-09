@@ -28,7 +28,7 @@ public:
 
 	void addComponent(Entity entity);
 	void removeComponent(Entity entity);
-	bool hasComponent(Entity entity) { return m_dataMap.count(entity.id); }
+	bool hasComponent(Entity entity) const { return m_dataMap.count(entity.id); }
 	DirectionalLight getLight(Entity entity) const;
 
 	void setLight(Entity entity, DirectionalLight light);

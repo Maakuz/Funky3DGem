@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
-
+#include "System.h"
 #include "glm/glm.hpp"
 #include "Entity.h"
 
-class MovementComp
+class MovementComp : System
 {
 public:
 	struct Movement
@@ -28,9 +28,9 @@ public:
 		return instance;
 	}
 
-	void addMovement(Entity entity);
-	void removeMovement(Entity entity);
-	bool hasMovement(Entity entity) { return m_dataMap.count(entity.id); }
+	void addComponent(Entity entity);
+	void removeComponent(Entity entity);
+	bool hasComponent(Entity entity) const { return m_dataMap.count(entity.id); }
 	void addAcceleration(Entity entity, glm::vec3 acceleration);
 
 	glm::vec3 getAcceleration(Entity entity) const;

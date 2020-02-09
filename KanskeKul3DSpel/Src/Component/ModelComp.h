@@ -1,21 +1,17 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
+#include "System.h"
 #include "glm/glm.hpp"
 #include "Entity.h"
 constexpr unsigned int NO_MESH = 404;
 
-enum class Meshes
-{
-	Cube
-};
-
-class ModelComp
+class ModelComp : System
 {
 public:
-	struct MeshBuffer 
+	struct ModelBuffer 
 	{
-		MeshBuffer(unsigned int bufferID = NO_MESH, unsigned int size = 0)
+		ModelBuffer(unsigned int bufferID = NO_MESH, unsigned int size = 0)
 		{
 			this->size = size;
 			this->vertexBufferID = bufferID;
@@ -33,13 +29,13 @@ public:
 		return instance;
 	}
 
-	void addModel(Entity entity);
-	void removeModel(Entity entity);
-	bool hasModel(Entity entity) { return m_dataMap.count(entity.id); }
-	MeshBuffer getBuffer(Entity entity) const;
-	Meshes getMesh(Entity entity) const;
+	void addComponent(Entity entity);
+	void removeComponent(Entity entity);
+	bool hasComponent(Entity entity) const { return m_dataMap.count(entity.id); }
+	ModelBuffer getBuffer(Entity entity) const;
+	unsigned int getMesh(Entity entity) const;
 
-	void setMesh(Entity entity, Meshes mesh);
+	void setMesh(Entity entity, unsigned int mesh);
 
 	void printImguiDebug(Entity entity);
 
@@ -47,17 +43,17 @@ private:
 	struct Model
 	{
 		Entity owner;
-		Meshes mesh;
+		unsigned int mesh;
 
 		Model(Entity owner)
 		{
-			this->mesh = Meshes::Cube;
+			this->mesh = 0;
 			this->owner = owner;
 		}
 	};
 
 	std::vector<Model> m_data;
-	std::unordered_map<Meshes, MeshBuffer> m_meshes;
+	std::vector<ModelBuffer> m_meshes;
 	std::unordered_map<unsigned int, unsigned int> m_dataMap;
 
 	ModelComp();

@@ -10,7 +10,18 @@ void LightComp::addComponent(Entity entity)
 
 void LightComp::removeComponent(Entity entity)
 {
-    removeData<DirectionalLight>(m_dataMap, m_data, entity);
+    if (!m_dataMap.count(entity.id))
+    {
+        printfCon("Entity %d does not have this component", entity.id);
+        return;
+    }
+
+    Entity last = m_owner.back();
+    unsigned int index = m_dataMap[entity.id];
+
+    unordered_erase(m_data, m_data.begin() + index);
+    m_dataMap[last.id] = index;
+    m_dataMap.erase(entity.id);
 
     m_owner[entity.id] = m_owner.back();
     m_owner.pop_back();
@@ -66,11 +77,10 @@ void LightComp::printImguiDebug(Entity entity)
 
     if (hasComponent(entity))
     {
-        DragFloat3(("Direction " + std::to_string(entity.id)).c_str(), &m_data[m_dataMap[entity.id]].dir.x);
-        DragFloat3(("Color " + std::to_string(entity.id)).c_str(), &m_data[m_dataMap[entity.id]].color.x);
+        DragFloat3(("Direction " + std::to_string(entity.id)).c_str(), &m_data[m_dataMap[entity.id]].dir.x, 0.01, -1, 1);
+        DragFloat3(("Color " + std::to_string(entity.id)).c_str(), &m_data[m_dataMap[entity.id]].color.x, 0.01, 0, 1);
 
-        if (Button(("Normalize dir " + std::to_string(entity.id)).c_str()))
-            m_data[m_dataMap[entity.id]].dir = glm::normalize(m_data[m_dataMap[entity.id]].dir);
+        m_data[m_dataMap[entity.id]].dir = glm::normalize(m_data[m_dataMap[entity.id]].dir);
     }
 
     else

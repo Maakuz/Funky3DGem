@@ -75,7 +75,7 @@ void Camera::calculateVP()
 
 void Camera::attachCamera(Entity entity)
 {
-    if (TransformComp::get().hasTransform(entity))
+    if (TransformComp::get().hasComponent(entity))
     {
         delete m_attachedEntity;
         m_attachedEntity = new Entity(entity);
