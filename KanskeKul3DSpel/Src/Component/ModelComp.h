@@ -4,6 +4,7 @@
 #include "System.h"
 #include "glm/glm.hpp"
 #include "Entity.h"
+#include "TransformComp.h"
 constexpr unsigned int NO_MESH = 404;
 
 class ModelComp : System

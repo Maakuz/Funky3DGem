@@ -4,6 +4,7 @@
 #include "Component/ModelComp.h"
 #include "Component/MovementComp.h"
 #include "Component/MovementInputComp.h"
+#include "Component/PhysicsComp.h"
 #include "Component/LightComp.h"
 #include "Renderer.h"
 
@@ -113,6 +114,8 @@ void Game::run(float deltaTime)
 
     if (m_debugEntities)
         debugEntities();
+
+    PhysicsComp::get().stepSimulation(deltaTime);
 }
 
 
@@ -187,6 +190,10 @@ void Game::debugEntities()
             Separator();
 
             light->printImguiDebug(entity);
+
+            Separator();
+
+            PhysicsComp::get().printImguiDebug(entity);
 
             Separator();
             Separator();

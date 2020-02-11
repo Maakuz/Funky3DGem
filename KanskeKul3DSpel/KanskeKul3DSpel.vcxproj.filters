@@ -78,9 +78,6 @@
     <ClCompile Include="Src\Component\PhysicsComp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\BulletWrapper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Shader.h">
@@ -134,7 +131,7 @@
     <ClInclude Include="Src\Component\PhysicsComp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\BulletWrapper.h">
+    <ClInclude Include="Src\BulletWrapper\BulletGlmConversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

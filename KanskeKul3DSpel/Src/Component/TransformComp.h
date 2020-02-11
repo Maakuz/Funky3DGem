@@ -5,6 +5,9 @@
 #include "glm/glm.hpp"
 #include "Entity.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/quaternion.hpp"
+#include "glm/gtc/quaternion.hpp"
+
 
 class TransformComp : System
 {
@@ -25,8 +28,9 @@ public:
 	void setPosition(Entity entity, glm::vec3 pos);
 	glm::vec3 getScale(Entity entity) const;
 	void setScale(Entity entity, glm::vec3 scale);
-	glm::vec3 getRotation(Entity entity) const;
-	void setRotation(Entity entity, glm::vec3 rotation);
+	glm::quat getRotation(Entity entity) const;
+	void setRotation(Entity entity, glm::vec3 rotation); //Maybe useful so i'll kkep it in case
+	void setRotation(Entity entity, glm::quat rotation);
 	void move(Entity entity, glm::vec3 offset);
 
 	glm::vec3 getRight(Entity entity);
@@ -41,7 +45,7 @@ private:
 		Entity owner;
 		glm::vec3 pos;
 		glm::vec3 scale;
-		glm::vec3 rotation;
+		glm::quat rotation;
 		glm::mat4 transform;
 		glm::mat4 invTranspose;
 		bool dirty;

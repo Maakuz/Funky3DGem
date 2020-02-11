@@ -1,7 +1,5 @@
 #include "TransformComp.h"
 #include "DataTemplate.h"
-#include "glm/gtc/quaternion.hpp"
-#include "glm/gtx/quaternion.hpp"
 
 void TransformComp::addComponent(Entity entity)
 {
@@ -97,7 +95,7 @@ void TransformComp::setScale(Entity entity, glm::vec3 scale)
     m_data[m_dataMap[entity.id]].dirty = true;
 }
 
-glm::vec3 TransformComp::getRotation(Entity entity) const
+glm::quat TransformComp::getRotation(Entity entity) const
 {
     if (!m_dataMap.count(entity.id))
     {
@@ -109,6 +107,18 @@ glm::vec3 TransformComp::getRotation(Entity entity) const
 }
 
 void TransformComp::setRotation(Entity entity, glm::vec3 rotation)
+{
+    if (!m_dataMap.count(entity.id))
+    {
+        printfCon("Entity %d has no tranform", entity.id);
+        return;
+    }
+
+    m_data[m_dataMap[entity.id]].rotation = glm::quat(rotation);
+    m_data[m_dataMap[entity.id]].dirty = true;
+}
+
+void TransformComp::setRotation(Entity entity, glm::quat rotation)
 {
     if (!m_dataMap.count(entity.id))
     {
@@ -154,8 +164,14 @@ void TransformComp::printImguiDebug(Entity entity)
         DragFloat3(("Scale " + std::to_string(entity.id)).c_str(), &scale[0], 0.5);
         setScale(entity, scale);
 
-        glm::vec3 rot = getRotation(entity);
-        DragFloat3(("Rotation " + std::to_string(entity.id)).c_str(), &rot[0], 0.1);
+        static float ypr[3]{0, 0, 0}; //Yawpitchroll
+        float prevYpr[3] = { ypr[0], ypr[1], ypr[2] };
+
+        DragFloat3(("Rotation " + std::to_string(entity.id)).c_str(), ypr, 0.01);
+        glm::quat rotation = glm::quat(glm::vec3(ypr[0] - prevYpr[0], ypr[1] - prevYpr[1], ypr[2] - prevYpr[2]));
+
+        glm::quat rot = getRotation(entity);
+        rot = rotation * rot;
         setRotation(entity, rot);
 
         if (TreeNode(("matrix " + std::to_string(entity.id)).c_str()))
@@ -222,10 +238,7 @@ void TransformComp::computeMat(Entity entity)
 
         glm::mat4 scale = glm::scale(glm::identity<glm::mat4>(), data.scale);
 
-
-        glm::quat quat(data.rotation);
-
-        glm::mat4 rotation = glm::toMat4(quat);
+        glm::mat4 rotation = glm::toMat4(data.rotation);
 
         data.transform = translate * rotation * scale;
         data.invTranspose = glm::transpose(glm::inverse(data.transform));

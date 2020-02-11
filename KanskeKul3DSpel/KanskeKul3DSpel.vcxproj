@@ -154,7 +154,6 @@
     <ClCompile Include="..\External\Include\Imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\External\Include\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\External\Include\Imgui\misc\cpp\imgui_stdlib.cpp" />
-    <ClCompile Include="Src\BulletWrapper.cpp" />
     <ClCompile Include="Src\Camera.cpp" />
     <ClCompile Include="Src\Component\EntityManager.cpp" />
     <ClCompile Include="Src\Component\LightComp.cpp" />
@@ -171,7 +170,7 @@
     <ClCompile Include="Src\UnorderedErase.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\BulletWrapper.h" />
+    <ClInclude Include="Src\BulletWrapper\BulletGlmConversion.h" />
     <ClInclude Include="Src\Camera.h" />
     <ClInclude Include="Src\Component\DataTemplate.h" />
     <ClInclude Include="Src\Component\EntityManager.h" />

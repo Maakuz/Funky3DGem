@@ -2,7 +2,6 @@
 #include <filesystem>
 #include "ModelComp.h"
 #include "DataTemplate.h"
-#include "TransformComp.h"
 #include "Importer/Importer.h"
 
 constexpr const char* MODEL_NAMES[2] = { "Cube", "Sphere" };
