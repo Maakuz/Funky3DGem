@@ -29,7 +29,6 @@ public:
 	glm::vec3 getScale(Entity entity) const;
 	void setScale(Entity entity, glm::vec3 scale);
 	glm::quat getRotation(Entity entity) const;
-	void setRotation(Entity entity, glm::vec3 rotation); //Maybe useful so i'll kkep it in case
 	void setRotation(Entity entity, glm::quat rotation);
 	void move(Entity entity, glm::vec3 offset);
 

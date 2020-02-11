@@ -152,12 +152,6 @@ void Game::debugEntities()
 
     //ShowDemoWindow();
 
-    TransformComp* transform = &TransformComp::get();
-    ModelComp* model = &ModelComp::get();
-    MovementComp* movement = &MovementComp::get();
-    MovementInputComp* movementInput = &MovementInputComp::get();
-    LightComp* light = &LightComp::get();
-
     Begin("Entity debugger", &m_debugEntities);
 
     if (Button("Add entity"))
@@ -173,28 +167,46 @@ void Game::debugEntities()
         if (CollapsingHeader(label.c_str()))
         {
             
-            transform->printImguiDebug(entity);
-
+            if (TreeNode(("Transform " + std::to_string(entity.id)).c_str()))
+            {
+                TransformComp::get().printImguiDebug(entity);
+                TreePop();
+            }
             Separator();
 
-            model->printImguiDebug(entity);
-
+            if (TreeNode(("Model " + std::to_string(entity.id)).c_str()))
+            {
+                ModelComp::get().printImguiDebug(entity);
+                TreePop();
+            }
             Separator();
 
-            movement->printImguiDebug(entity);
-
+            if (TreeNode(("Movement " + std::to_string(entity.id)).c_str()))
+            {
+                MovementComp::get().printImguiDebug(entity);
+                TreePop();
+            }
             Separator();
 
-            movementInput->printImguiDebug(entity);
-
+            if (TreeNode(("movementInput " + std::to_string(entity.id)).c_str()))
+            {
+                MovementInputComp::get().printImguiDebug(entity);
+                TreePop();
+            }
             Separator();
 
-            light->printImguiDebug(entity);
-
+            if (TreeNode(("Directional light " + std::to_string(entity.id)).c_str()))
+            {
+                LightComp::get().printImguiDebug(entity);
+                TreePop();
+            }
             Separator();
 
-            PhysicsComp::get().printImguiDebug(entity);
-
+            if (TreeNode(("Rigidbody " + std::to_string(entity.id)).c_str()))
+            {
+                PhysicsComp::get().printImguiDebug(entity);
+                TreePop();
+            }
             Separator();
             Separator();
 

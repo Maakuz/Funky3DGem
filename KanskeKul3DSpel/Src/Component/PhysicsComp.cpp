@@ -49,7 +49,7 @@ void PhysicsComp::addComponent(Entity entity)
 
     addData<Physics>(m_dataMap, m_data, entity, Physics(entity));
 
-    setShape(entity, new btBoxShape(btVector3(btScalar(0.5), btScalar(0.5), btScalar(0.5))), 10);
+    setShape(entity, new btBoxShape(btVector3(btScalar(0.5), btScalar(0.5), btScalar(0.5))), 1);
 }
 
 void PhysicsComp::removeComponent(Entity entity)
@@ -94,6 +94,36 @@ void PhysicsComp::setShape(Entity entity, btCollisionShape* shape, float mass)
     m_world->addRigidBody(currentBody);
 }
 
+void PhysicsComp::setMass(Entity entity, float mass)
+{
+    if (!hasComponent(entity))
+    {
+        printfCon("Entity has no physics", entity.id);
+        return;
+    }
+
+    btRigidBody* body = m_data[m_dataMap[entity.id]].rigidBody;
+
+
+    btVector3 inertia(0, 0, 0);
+
+    if (abs(mass) > FLT_EPSILON)
+        body->getCollisionShape()->calculateLocalInertia(mass, inertia);
+
+    body->setMassProps(mass, inertia);
+}
+
+btRigidBody* PhysicsComp::getRigidBody(Entity entity)
+{
+    if (!hasComponent(entity))
+    {
+        printfCon("Entity has no physics", entity.id);
+        return nullptr;
+    }
+
+    return m_data[m_dataMap[entity.id]].rigidBody;
+}
+
 void PhysicsComp::setGravity(float gravity)
 {
     m_world->setGravity(btVector3(0, -gravity, 0));
@@ -118,12 +148,17 @@ void PhysicsComp::printImguiDebug(Entity entity)
     using namespace ImGui;
     if (hasComponent(entity))
     {
-        
+        btRigidBody* body = m_data[m_dataMap[entity.id]].rigidBody;
+        float mass = body->getMass();
+        if (DragFloat(("Mass " + std::to_string(entity.id)).c_str(), &mass, 0.01, -1, 100000))
+            setMass(entity, mass);
+
+        Text("%f, %f, %f", body->getLinearVelocity().x(), body->getLinearVelocity().y(), body->getLinearVelocity().z());
     }
 
     else
     {
-        if (Button(("Add transform" + std::to_string(entity.id)).c_str()))
+        if (Button(("Add rigidbody" + std::to_string(entity.id)).c_str()))
             addComponent(entity);
     }
 }

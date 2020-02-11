@@ -1,5 +1,7 @@
 #include "TransformComp.h"
+#include "PhysicsComp.h"
 #include "DataTemplate.h"
+#include "../BulletWrapper/BulletGlmConversion.h"
 
 void TransformComp::addComponent(Entity entity)
 {
@@ -58,6 +60,9 @@ void TransformComp::setPosition(Entity entity, glm::vec3 pos)
 
     m_data[m_dataMap[entity.id]].pos = pos;
     m_data[m_dataMap[entity.id]].dirty = true;
+
+    if (PhysicsComp::get().hasComponent(entity))
+        PhysicsComp::get().getRigidBody(entity)->getWorldTransform().setOrigin(glmToBullet(pos));
 }
 
 void TransformComp::move(Entity entity, glm::vec3 offset)
@@ -68,8 +73,11 @@ void TransformComp::move(Entity entity, glm::vec3 offset)
         return;
     }
 
-    m_data[m_dataMap[entity.id]].pos += offset;
+    glm::vec3 newPos = m_data[m_dataMap[entity.id]].pos += offset;
     m_data[m_dataMap[entity.id]].dirty = true;
+
+    if (PhysicsComp::get().hasComponent(entity))
+        PhysicsComp::get().getRigidBody(entity)->getWorldTransform().setOrigin(glmToBullet(newPos));
 }
 
 glm::vec3 TransformComp::getScale(Entity entity) const
@@ -93,6 +101,9 @@ void TransformComp::setScale(Entity entity, glm::vec3 scale)
 
     m_data[m_dataMap[entity.id]].scale = scale;
     m_data[m_dataMap[entity.id]].dirty = true;
+
+    if (PhysicsComp::get().hasComponent(entity))
+        PhysicsComp::get().getRigidBody(entity)->getCollisionShape()->setLocalScaling(glmToBullet(scale));
 }
 
 glm::quat TransformComp::getRotation(Entity entity) const
@@ -106,18 +117,6 @@ glm::quat TransformComp::getRotation(Entity entity) const
     return m_data[m_dataMap.at(entity.id)].rotation;
 }
 
-void TransformComp::setRotation(Entity entity, glm::vec3 rotation)
-{
-    if (!m_dataMap.count(entity.id))
-    {
-        printfCon("Entity %d has no tranform", entity.id);
-        return;
-    }
-
-    m_data[m_dataMap[entity.id]].rotation = glm::quat(rotation);
-    m_data[m_dataMap[entity.id]].dirty = true;
-}
-
 void TransformComp::setRotation(Entity entity, glm::quat rotation)
 {
     if (!m_dataMap.count(entity.id))
@@ -128,6 +127,9 @@ void TransformComp::setRotation(Entity entity, glm::quat rotation)
 
     m_data[m_dataMap[entity.id]].rotation = rotation;
     m_data[m_dataMap[entity.id]].dirty = true;
+
+    if (PhysicsComp::get().hasComponent(entity))
+        PhysicsComp::get().getRigidBody(entity)->getWorldTransform().setRotation(glmToBullet(rotation));
 }
 
 glm::vec3 TransformComp::getRight(Entity entity)
@@ -205,7 +207,7 @@ void TransformComp::printImguiDebug(Entity entity)
                     Text("%f", transformMat[j][k]);
                     NextColumn();
                 }
-
+                setRotation(entity, glm::vec3());
             }
 
             Columns(1);

@@ -32,6 +32,11 @@ public:
 
 	//No need to manage shape outside as it will be deleted when the system or entity dies.
 	void setShape(Entity entity, btCollisionShape* shape, float mass);
+	void setMass(Entity entity, float mass);
+	btRigidBody* getRigidBody(Entity entity);
+
+
+
 	void setGravity(float gravity);
 	void stepSimulation(float deltaTime);
 
