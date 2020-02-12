@@ -1,12 +1,13 @@
-#include "MovementInputComp.h"
+#include "PlayerInputComp.h"
 #include "DataTemplate.h"
-#include "MovementComp.h"
+#include "PhysicsComp.h"
 #include "TransformComp.h"
+#include "../BulletWrapper/BulletGlmConversion.h"
 #include "../Camera.h"
 
-void MovementInputComp::addInput(Entity entity)
+void PlayerInputComp::addInput(Entity entity)
 {
-    if (!MovementComp::get().hasComponent(entity))
+    if (!PhysicsComp::get().hasComponent(entity))
     {
         printfCon("Entity need transform to have movement", entity.id);
         return;
@@ -15,54 +16,57 @@ void MovementInputComp::addInput(Entity entity)
     addData<Keys>(m_dataMap, m_data, entity, Keys(entity));
 }
 
-void MovementInputComp::removeInput(Entity entity)
+void PlayerInputComp::removeInput(Entity entity)
 {
     removeData<Keys>(m_dataMap, m_data, entity);
 }
 
-void MovementInputComp::setKeys(Entity entity, Keys keys)
+void PlayerInputComp::setKeys(Entity entity, Keys keys)
 {
     m_data[m_dataMap[entity.id]] = keys;
 }
 
-void MovementInputComp::handleInputs(GLFWwindow* window)
+void PlayerInputComp::handleInputs(GLFWwindow* window)
 {
-    MovementComp* movement = &MovementComp::get();
     TransformComp* transform = &TransformComp::get();
-    for (Keys& keys : m_data)
+    PhysicsComp* physics = &PhysicsComp::get();
+    for (Keys& data : m_data)
     {
         glm::vec3 forward;
         glm::vec3 right;
         Camera* cam = &Camera::get();
-        if (cam->getAttachedEntity()->id == keys.owner.id)
+        if (cam->getAttachedEntity()->id == data.owner.id)
         {
             forward = cam->getForward();
             right = cam->getRight();
+
+            //make movement paralllellLl to ground
+            forward = glm::normalize(glm::cross({ 0, 1, 0 }, right));
+            right = glm::normalize(glm::cross(forward, {0, 1, 0}));
         }
 
         else
         {
-            forward = transform->getForward(keys.owner);
-            right = transform->getRight(keys.owner);
+            forward = transform->getForward(data.owner);
+            right = transform->getRight(data.owner);
         }
 
-        if (glfwGetKey(window, keys.forward))
-            movement->addAcceleration(keys.owner, keys.movementSpeed * forward);
+        if (glfwGetKey(window, data.forward))
+            physics->getRigidBody(data.owner)->applyCentralForce(glmToBullet(data.movementSpeed * forward));
 
-        else if (glfwGetKey(window, keys.backward))
-            movement->addAcceleration(keys.owner, keys.movementSpeed * -forward);
+        else if (glfwGetKey(window, data.backward))
+            physics->getRigidBody(data.owner)->applyCentralForce(glmToBullet(data.movementSpeed * -forward));
 
+        if (glfwGetKey(window, data.strafeRight))
+            physics->getRigidBody(data.owner)->applyCentralForce(glmToBullet(data.movementSpeed * right));
 
-        if (glfwGetKey(window, keys.strafeRight))
-            movement->addAcceleration(keys.owner, keys.movementSpeed * right);
-
-        else if (glfwGetKey(window, keys.strafeLeft))
-            movement->addAcceleration(keys.owner, keys.movementSpeed * -right);
+        else if (glfwGetKey(window, data.strafeLeft))
+            physics->getRigidBody(data.owner)->applyCentralForce(glmToBullet(data.movementSpeed * -right));
 
     }
 }
 
-void MovementInputComp::printImguiDebug(Entity entity)
+void PlayerInputComp::printImguiDebug(Entity entity)
 {
     using namespace ImGui;
 

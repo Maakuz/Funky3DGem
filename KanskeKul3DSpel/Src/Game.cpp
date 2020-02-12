@@ -2,8 +2,7 @@
 #include "ConsoleWindow.h"
 #include "Component/TransformComp.h"
 #include "Component/ModelComp.h"
-#include "Component/MovementComp.h"
-#include "Component/MovementInputComp.h"
+#include "Component/PlayerInputComp.h"
 #include "Component/PhysicsComp.h"
 #include "Component/LightComp.h"
 #include "Renderer.h"
@@ -44,16 +43,21 @@ Game::Game(GLFWwindow* window)
     m_entities.push_back(e);
 
     TransformComp::get().addComponent(e);
-    TransformComp::get().setPosition(e, { 0, 0, 1 });
+    TransformComp::get().setPosition(e, { 0, 2, 1 });
     Camera::get().attachCamera(e);
-    MovementComp::get().addComponent(e);
-    MovementInputComp::get().addInput(e);
-
+    PhysicsComp::get().addComponent(e);
+    PhysicsComp::get().setMass(e, 2);
+    PlayerInputComp::get().addInput(e);
+    LightComp::get().addComponent(e);
+    LightComp::get().setColor(e, { 0.7, 0.2, 0 });
+    LightComp::get().setDir(e, {0.2, -0.6, 0.2});
     e = m_manager.createEntity();
     m_entities.push_back(e);
 
     TransformComp::get().addComponent(e);
+    TransformComp::get().setScale(e, { 10, 1, 10 });
     ModelComp::get().addComponent(e);
+    PhysicsComp::get().addComponent(e);
 
     s_prevCallback = glfwSetKeyCallback(m_window, inputCallbackWrapper);
 
@@ -76,8 +80,7 @@ void Game::run(float deltaTime)
         ConsoleWindow::get().update(!consolePrev);
     consolePrev = m_consoleVisible;
 
-    MovementInputComp::get().handleInputs(m_window);
-    MovementComp::get().applyToTransform(deltaTime);
+    PlayerInputComp::get().handleInputs(m_window);
 
     if (m_lockMouse)
     {
@@ -181,16 +184,9 @@ void Game::debugEntities()
             }
             Separator();
 
-            if (TreeNode(("Movement " + std::to_string(entity.id)).c_str()))
-            {
-                MovementComp::get().printImguiDebug(entity);
-                TreePop();
-            }
-            Separator();
-
             if (TreeNode(("movementInput " + std::to_string(entity.id)).c_str()))
             {
-                MovementInputComp::get().printImguiDebug(entity);
+                PlayerInputComp::get().printImguiDebug(entity);
                 TreePop();
             }
             Separator();

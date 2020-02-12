@@ -48,8 +48,8 @@ void PhysicsComp::addComponent(Entity entity)
 
 
     addData<Physics>(m_dataMap, m_data, entity, Physics(entity));
-
-    setShape(entity, new btBoxShape(btVector3(btScalar(0.5), btScalar(0.5), btScalar(0.5))), 1);
+    btVector3 scale = glmToBullet(TransformComp::get().getScale(entity));
+    setShape(entity, new btBoxShape(scale / 2.f), 0);
 }
 
 void PhysicsComp::removeComponent(Entity entity)
@@ -105,12 +105,17 @@ void PhysicsComp::setMass(Entity entity, float mass)
     btRigidBody* body = m_data[m_dataMap[entity.id]].rigidBody;
 
 
+    m_world->removeRigidBody(body);
+
     btVector3 inertia(0, 0, 0);
 
     if (abs(mass) > FLT_EPSILON)
         body->getCollisionShape()->calculateLocalInertia(mass, inertia);
 
     body->setMassProps(mass, inertia);
+    body->activate();
+
+    m_world->addRigidBody(body);
 }
 
 btRigidBody* PhysicsComp::getRigidBody(Entity entity)
@@ -150,15 +155,19 @@ void PhysicsComp::printImguiDebug(Entity entity)
     {
         btRigidBody* body = m_data[m_dataMap[entity.id]].rigidBody;
         float mass = body->getMass();
-        if (DragFloat(("Mass " + std::to_string(entity.id)).c_str(), &mass, 0.01, -1, 100000))
+        if (DragFloat(("Mass " + std::to_string(entity.id)).c_str(), &mass, 0.01, 0, 100000))
             setMass(entity, mass);
 
-        Text("%f, %f, %f", body->getLinearVelocity().x(), body->getLinearVelocity().y(), body->getLinearVelocity().z());
+        if (Button(("Kill linear velocity " + std::to_string(entity.id)).c_str()))
+            body->setLinearVelocity({0, 0, 0});
+
+        Text("Linear velocity: %f, %f, %f", body->getLinearVelocity().x(), body->getLinearVelocity().y(), body->getLinearVelocity().z());
+        Text("Gravity: %f, %f, %f", body->getGravity().x(), body->getGravity().y(), body->getGravity().z());
     }
 
     else
     {
-        if (Button(("Add rigidbody" + std::to_string(entity.id)).c_str()))
+        if (Button(("Add rigidbody " + std::to_string(entity.id)).c_str()))
             addComponent(entity);
     }
 }

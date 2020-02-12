@@ -158,8 +158,7 @@
     <ClCompile Include="Src\Component\EntityManager.cpp" />
     <ClCompile Include="Src\Component\LightComp.cpp" />
     <ClCompile Include="Src\Component\ModelComp.cpp" />
-    <ClCompile Include="Src\Component\MovementComp.cpp" />
-    <ClCompile Include="Src\Component\MovementInputComp.cpp" />
+    <ClCompile Include="Src\Component\PlayerInputComp.cpp" />
     <ClCompile Include="Src\Component\PhysicsComp.cpp" />
     <ClCompile Include="Src\Component\TransformComp.cpp" />
     <ClCompile Include="Src\ConsoleWindow.cpp" />
@@ -174,8 +173,7 @@
     <ClInclude Include="Src\Camera.h" />
     <ClInclude Include="Src\Component\DataTemplate.h" />
     <ClInclude Include="Src\Component\EntityManager.h" />
-    <ClInclude Include="Src\Component\MovementComp.h" />
-    <ClInclude Include="Src\Component\MovementInputComp.h" />
+    <ClInclude Include="Src\Component\PlayerInputComp.h" />
     <ClInclude Include="Src\Component\LightComp.h" />
     <ClInclude Include="Src\Component\ModelComp.h" />
     <ClInclude Include="Src\Component\PhysicsComp.h" />

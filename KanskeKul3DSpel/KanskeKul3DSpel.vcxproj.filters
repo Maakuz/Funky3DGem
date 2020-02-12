@@ -69,13 +69,10 @@
     <ClCompile Include="Src\Component\LightComp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Component\MovementComp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Component\MovementInputComp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Component\PhysicsComp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Component\PlayerInputComp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,12 +116,6 @@
     <ClInclude Include="Src\Component\LightComp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Component\MovementInputComp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Component\MovementComp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Component\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -132,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\BulletWrapper\BulletGlmConversion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Component\PlayerInputComp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

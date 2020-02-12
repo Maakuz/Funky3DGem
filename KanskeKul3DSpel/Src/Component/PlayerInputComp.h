@@ -5,7 +5,7 @@
 #include "GLFW/glfw3.h"
 #include "Entity.h"
 
-class MovementInputComp
+class PlayerInputComp
 {
 public:
 	struct Keys 
@@ -24,13 +24,13 @@ public:
 			this->backward = GLFW_KEY_S;
 			this->strafeLeft = GLFW_KEY_A;
 			this->strafeRight = GLFW_KEY_D;
-			this->movementSpeed = 1;
+			this->movementSpeed = 10;
 		}
 	};
 
-	static MovementInputComp& get()
+	static PlayerInputComp& get()
 	{
-		static MovementInputComp instance;
+		static PlayerInputComp instance;
 		return instance;
 	}
 
