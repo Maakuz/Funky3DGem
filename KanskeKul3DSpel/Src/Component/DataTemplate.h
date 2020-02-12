@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <vector>
 #include "Entity.h"
-#include "../ConsoleWindow.h"
+#include "../Debug/ConsoleWindow.h"
 #include "../UnorderedErase.h"
 
 template <typename DataStruct>

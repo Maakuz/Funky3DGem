@@ -1,5 +1,6 @@
 #include "Game.h"
-#include "ConsoleWindow.h"
+#include "Debug/ConsoleWindow.h"
+#include "Debug/Profiler.h"
 #include "Component/TransformComp.h"
 #include "Component/ModelComp.h"
 #include "Component/PlayerInputComp.h"
@@ -48,9 +49,9 @@ Game::Game(GLFWwindow* window)
     PhysicsComp::get().addComponent(e);
     PhysicsComp::get().setMass(e, 2);
     PlayerInputComp::get().addInput(e);
-    LightComp::get().addComponent(e);
-    LightComp::get().setColor(e, { 0.7, 0.2, 0 });
-    LightComp::get().setDir(e, {0.2, -0.6, 0.2});
+    DirectionalLightComp::get().addComponent(e);
+    DirectionalLightComp::get().setColor(e, { 0.7, 0.2, 0 });
+    DirectionalLightComp::get().setDir(e, {0.2, -0.6, 0.2});
     e = m_manager.createEntity();
     m_entities.push_back(e);
 
@@ -75,6 +76,8 @@ Game::Game(GLFWwindow* window)
 
 void Game::run(float deltaTime)
 {
+    Profiler::get().update(deltaTime);
+
     static bool consolePrev = false;
     if (m_consoleVisible)
         ConsoleWindow::get().update(!consolePrev);
@@ -88,13 +91,12 @@ void Game::run(float deltaTime)
         if (glfwRawMouseMotionSupported())
             glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
-        static double x, y;
-        static double prevX, prevY;
-        prevX = x;
-        prevY = y;
-        glfwGetCursorPos(m_window, &x, &y);
+        m_mouseData.prevX = m_mouseData.x;
+        m_mouseData.prevY = m_mouseData.y;
+        
+        glfwGetCursorPos(m_window, &m_mouseData.x, &m_mouseData.y);
 
-        Camera::get().trackMouse(deltaTime, x - prevX, prevY - y);
+        Camera::get().trackMouse(deltaTime, m_mouseData.x - m_mouseData.prevX, m_mouseData.prevY - m_mouseData.y);
     }
 
     else
@@ -105,6 +107,7 @@ void Game::run(float deltaTime)
     }
 
     Camera::get().calculateVP();
+    DirectionalLightComp::get().calculateView();
 
     for (size_t i = 0; i < m_entities.size(); i++)
     {
@@ -112,13 +115,16 @@ void Game::run(float deltaTime)
             Renderer::queueModel(m_entities[i]);
     }
 
+    PhysicsComp::get().stepSimulation(deltaTime);
+    
+    
+    //Debug
     if (m_debugCamera)
         Camera::get().cameraDebug(&m_debugCamera);
 
     if (m_debugEntities)
         debugEntities();
 
-    PhysicsComp::get().stepSimulation(deltaTime);
 }
 
 
@@ -141,7 +147,22 @@ void Game::inputCallback(int key, int code, int action, int mods)
             break;
 
         case GLFW_KEY_F3:
+            if (!m_lockMouse)
+            {
+                glfwGetCursorPos(m_window, &m_mouseData.x, &m_mouseData.y);
+                m_mouseData.prevX = m_mouseData.x;
+                m_mouseData.prevY = m_mouseData.y;
+            }
+
             m_lockMouse = !m_lockMouse;
+            break;
+
+        case GLFW_KEY_P:
+            if (Profiler::get().isOpen())
+                Profiler::get().close();
+
+            else
+                Profiler::get().open();
             break;
         default:
             break;
@@ -153,7 +174,7 @@ void Game::debugEntities()
 {
     using namespace ImGui;
 
-    //ShowDemoWindow();
+    ShowDemoWindow();
 
     Begin("Entity debugger", &m_debugEntities);
 
@@ -193,7 +214,7 @@ void Game::debugEntities()
 
             if (TreeNode(("Directional light " + std::to_string(entity.id)).c_str()))
             {
-                LightComp::get().printImguiDebug(entity);
+                DirectionalLightComp::get().printImguiDebug(entity);
                 TreePop();
             }
             Separator();

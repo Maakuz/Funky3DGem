@@ -161,11 +161,13 @@
     <ClCompile Include="Src\Component\PlayerInputComp.cpp" />
     <ClCompile Include="Src\Component\PhysicsComp.cpp" />
     <ClCompile Include="Src\Component\TransformComp.cpp" />
-    <ClCompile Include="Src\ConsoleWindow.cpp" />
+    <ClCompile Include="Src\Debug\ConsoleWindow.cpp" />
+    <ClCompile Include="Src\Debug\Profiler.cpp" />
     <ClCompile Include="Src\Game.cpp" />
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Renderer.cpp" />
     <ClCompile Include="Src\Shader.cpp" />
+    <ClCompile Include="Src\ShadowMap.cpp" />
     <ClCompile Include="Src\UnorderedErase.h" />
   </ItemGroup>
   <ItemGroup>
@@ -179,17 +181,20 @@
     <ClInclude Include="Src\Component\PhysicsComp.h" />
     <ClInclude Include="Src\Component\System.h" />
     <ClInclude Include="Src\Component\TransformComp.h" />
-    <ClInclude Include="Src\ConsoleWindow.h" />
+    <ClInclude Include="Src\Debug\ConsoleWindow.h" />
     <ClInclude Include="Src\Component\Entity.h" />
+    <ClInclude Include="Src\Debug\Profiler.h" />
     <ClInclude Include="Src\Game.h" />
     <ClInclude Include="Src\ImguiInit.h" />
-    <ClInclude Include="Src\Player.h" />
     <ClInclude Include="Src\Renderer.h" />
     <ClInclude Include="Src\Shader.h" />
+    <ClInclude Include="Src\ShadowMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shaders\PS.glsl" />
+    <None Include="..\Resources\Shaders\PS_Shadow.glsl" />
     <None Include="..\Resources\Shaders\VS.glsl" />
+    <None Include="..\Resources\Shaders\VS_Shadow.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,6 +17,8 @@ public:
 	void trackMouse(float deltaTime, float mouseX, float mouseY);
 	void calculateVP();
 
+	glm::vec3 getPos() const { return m_pos; }
+
 	glm::vec3 getForward() const { return m_forward; }
 	glm::vec3 getRight() const { return m_right; }
 	glm::mat4 getView() const { return m_view; }

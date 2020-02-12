@@ -1,5 +1,5 @@
 #include "EntityManager.h"
-#include "../ConsoleWindow.h"
+#include "../Debug/ConsoleWindow.h"
 
 constexpr int MINIMUM_FREE_SLOTS = 100;
 

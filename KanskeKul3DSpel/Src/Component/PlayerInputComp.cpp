@@ -51,18 +51,34 @@ void PlayerInputComp::handleInputs(GLFWwindow* window)
             right = transform->getRight(data.owner);
         }
 
+        bool wake = false;
+
         if (glfwGetKey(window, data.forward))
+        {
             physics->getRigidBody(data.owner)->applyCentralForce(glmToBullet(data.movementSpeed * forward));
+            wake = true;
+        }
 
         else if (glfwGetKey(window, data.backward))
+        {
             physics->getRigidBody(data.owner)->applyCentralForce(glmToBullet(data.movementSpeed * -forward));
+            wake = true;
+        }
 
         if (glfwGetKey(window, data.strafeRight))
+        {
             physics->getRigidBody(data.owner)->applyCentralForce(glmToBullet(data.movementSpeed * right));
+            wake = true;
+        }
 
         else if (glfwGetKey(window, data.strafeLeft))
+        {
             physics->getRigidBody(data.owner)->applyCentralForce(glmToBullet(data.movementSpeed * -right));
+            wake = true;
+        }
 
+        if (wake)
+            physics->getRigidBody(data.owner)->activate();
     }
 }
 

@@ -10,13 +10,15 @@ public:
 	virtual ~Renderer() {};
 
 	void draw();
+	void rendererDebug();
 
 	static void queueModel(Entity entity);
 
 private:
-	Shader m_vertex;
-	Shader m_fragment;
-	Program m_program;
+	Program m_forward;
+	Program m_shadowBuffer;
 	
 	static std::vector<Entity> s_modelQueue;
+
+	bool m_showDebug;
 };

@@ -32,6 +32,7 @@ int main()
     glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    glfwSwapInterval(1);
 
     ImGuiImpl::Initialize(window);
 
@@ -70,7 +71,7 @@ int main()
 
         //Draw
         renderer.draw();
-
+        renderer.rendererDebug();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

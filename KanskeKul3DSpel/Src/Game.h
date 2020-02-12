@@ -13,6 +13,20 @@ public:
 	void run(float deltaTime);
 
 private:
+	struct MouseData
+	{
+		double x, y;
+		double prevX, prevY;
+
+		MouseData()
+		{
+			x = 0;
+			y = 0;
+			prevX = 0;
+			prevY = 0;
+		}
+	} m_mouseData;
+
 	GLFWwindow* m_window;
 	EntityManager m_manager;
 

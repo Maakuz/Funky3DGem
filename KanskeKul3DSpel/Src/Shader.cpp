@@ -2,7 +2,7 @@
 #include <sstream>
 #include <vector>
 #include "Shader.h"
-#include "ConsoleWindow.h"
+#include "Debug/ConsoleWindow.h"
 
 Shader::Shader(std::string path, ShaderType type)
 {

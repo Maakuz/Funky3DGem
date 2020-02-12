@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "Component/TransformComp.h"
-#include "ConsoleWindow.h"
+#include "Debug/ConsoleWindow.h"
 #include "GLFW/glfw3.h"
 
 Camera::Camera()
@@ -35,7 +35,6 @@ void Camera::initialize(float fov, float screenWidth, float screenHeight)
 
     m_view = glm::lookAt(m_pos, m_forward, m_up);
     m_projection = glm::perspective(glm::radians(90.f), screenWidth / screenHeight, 0.1f, 100.f);
-
     m_vp = m_projection * m_view;
 }
 

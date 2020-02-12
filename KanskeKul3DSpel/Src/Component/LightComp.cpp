@@ -1,14 +1,15 @@
 #include "LightComp.h"
 #include "DataTemplate.h"
+#include "../Camera.h"
 
-
-void LightComp::addComponent(Entity entity)
+void DirectionalLightComp::addComponent(Entity entity)
 {
-    addData<DirectionalLight>(m_dataMap, m_data, entity, DirectionalLight(entity));
+    addData<DirectionalLight>(m_dataMap, m_lights, entity, DirectionalLight(entity));
     m_owner.push_back(entity);
+    m_shadows.push_back(DirLightShadow());
 }
 
-void LightComp::removeComponent(Entity entity)
+void DirectionalLightComp::removeComponent(Entity entity)
 {
     if (!m_dataMap.count(entity.id))
     {
@@ -19,7 +20,8 @@ void LightComp::removeComponent(Entity entity)
     Entity last = m_owner.back();
     unsigned int index = m_dataMap[entity.id];
 
-    unordered_erase(m_data, m_data.begin() + index);
+    unordered_erase(m_lights, m_lights.begin() + index);
+    unordered_erase(m_shadows, m_shadows.begin() + index);
     m_dataMap[last.id] = index;
     m_dataMap.erase(entity.id);
 
@@ -27,7 +29,7 @@ void LightComp::removeComponent(Entity entity)
     m_owner.pop_back();
 }
 
-LightComp::DirectionalLight LightComp::getLight(Entity entity) const
+DirectionalLightComp::DirectionalLight DirectionalLightComp::getLight(Entity entity) const
 {
     if (!m_dataMap.count(entity.id))
     {
@@ -35,10 +37,10 @@ LightComp::DirectionalLight LightComp::getLight(Entity entity) const
         return DirectionalLight(ENTITY_ERROR);
     }
 
-    return m_data[m_dataMap.at(entity.id)];
+    return m_lights[m_dataMap.at(entity.id)];
 }
 
-void LightComp::setLight(Entity entity, DirectionalLight light)
+void DirectionalLightComp::setLight(Entity entity, DirectionalLight light)
 {
     if (!m_dataMap.count(entity.id))
     {
@@ -46,10 +48,10 @@ void LightComp::setLight(Entity entity, DirectionalLight light)
         return;
     }
 
-    m_data[m_dataMap.at(entity.id)] = light;
+    m_lights[m_dataMap.at(entity.id)] = light;
 }
 
-void LightComp::setDir(Entity entity, glm::vec3 dir)
+void DirectionalLightComp::setDir(Entity entity, glm::vec3 dir)
 {
     if (!m_dataMap.count(entity.id))
     {
@@ -57,10 +59,10 @@ void LightComp::setDir(Entity entity, glm::vec3 dir)
         return;
     }
 
-    m_data[m_dataMap.at(entity.id)].dir = dir;
+    m_lights[m_dataMap.at(entity.id)].dir = dir;
 }
 
-void LightComp::setColor(Entity entity, glm::vec3 color)
+void DirectionalLightComp::setColor(Entity entity, glm::vec3 color)
 {
     if (!m_dataMap.count(entity.id))
     {
@@ -68,19 +70,32 @@ void LightComp::setColor(Entity entity, glm::vec3 color)
         return;
     }
 
-    m_data[m_dataMap.at(entity.id)].color = color;
+    m_lights[m_dataMap.at(entity.id)].color = color;
 }
 
-void LightComp::printImguiDebug(Entity entity)
+void DirectionalLightComp::calculateView()
+{
+    Camera* cam = &Camera::get();
+    for (int i = 0; i < m_lights.size(); i++)
+    {
+        if (m_shadows[i].castShadow)
+        {
+            glm::vec3 pos = cam->getPos() + (-m_lights[i].dir * 10.f);
+            m_shadows[i].view = glm::lookAt(pos, cam->getPos(), {0, 1, 0});
+        }
+    }
+}
+
+void DirectionalLightComp::printImguiDebug(Entity entity)
 {
     using namespace ImGui;
 
     if (hasComponent(entity))
     {
-        DragFloat3(("Direction " + std::to_string(entity.id)).c_str(), &m_data[m_dataMap[entity.id]].dir.x, 0.01, -1, 1);
-        DragFloat3(("Color " + std::to_string(entity.id)).c_str(), &m_data[m_dataMap[entity.id]].color.x, 0.01, 0, 1);
+        DragFloat3(("Direction " + std::to_string(entity.id)).c_str(), &m_lights[m_dataMap[entity.id]].dir.x, 0.01, -1, 1);
+        DragFloat3(("Color " + std::to_string(entity.id)).c_str(), &m_lights[m_dataMap[entity.id]].color.x, 0.01, 0, 1);
 
-        m_data[m_dataMap[entity.id]].dir = glm::normalize(m_data[m_dataMap[entity.id]].dir);
+        m_lights[m_dataMap[entity.id]].dir = glm::normalize(m_lights[m_dataMap[entity.id]].dir);
     }
 
     else
