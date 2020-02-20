@@ -6,7 +6,6 @@ void DirectionalLightComp::addComponent(Entity entity)
 {
     addData<DirectionalLight>(m_dataMap, m_lights, entity, DirectionalLight(entity));
     m_owner.push_back(entity);
-    m_shadows.push_back(DirLightShadow());
 }
 
 void DirectionalLightComp::removeComponent(Entity entity)
@@ -21,7 +20,6 @@ void DirectionalLightComp::removeComponent(Entity entity)
     unsigned int index = m_dataMap[entity.id];
 
     unordered_erase(m_lights, m_lights.begin() + index);
-    unordered_erase(m_shadows, m_shadows.begin() + index);
     m_dataMap[last.id] = index;
     m_dataMap.erase(entity.id);
 
@@ -73,16 +71,28 @@ void DirectionalLightComp::setColor(Entity entity, glm::vec3 color)
     m_lights[m_dataMap.at(entity.id)].color = color;
 }
 
+void DirectionalLightComp::setAsShadowCaster(Entity entity)
+{
+    if (!m_dataMap.count(entity.id))
+    {
+        printfCon("Entity %d has no light", entity.id);
+        return;
+    }
+
+    if (m_shadow.assignedEntity)
+        delete m_shadow.assignedEntity;
+
+    m_shadow.assignedEntity = new Entity(entity);
+}
+
 void DirectionalLightComp::calculateView()
 {
     Camera* cam = &Camera::get();
-    for (int i = 0; i < m_lights.size(); i++)
+
+    if (m_shadow.assignedEntity)
     {
-        if (m_shadows[i].castShadow)
-        {
-            glm::vec3 pos = cam->getPos() + (-m_lights[i].dir * 10.f);
-            m_shadows[i].view = glm::lookAt(pos, cam->getPos(), {0, 1, 0});
-        }
+        glm::vec3 pos = cam->getPos() + (-m_lights[m_dataMap[m_shadow.assignedEntity->id]].dir * 10.f);
+        m_shadow.view = glm::lookAt(pos, cam->getPos(), { 0, 1, 0 });
     }
 }
 
@@ -96,6 +106,9 @@ void DirectionalLightComp::printImguiDebug(Entity entity)
         DragFloat3(("Color " + std::to_string(entity.id)).c_str(), &m_lights[m_dataMap[entity.id]].color.x, 0.01, 0, 1);
 
         m_lights[m_dataMap[entity.id]].dir = glm::normalize(m_lights[m_dataMap[entity.id]].dir);
+
+        if (Button(("Assign shadow caster " + std::to_string(entity.id)).c_str()))
+            setAsShadowCaster(entity);
     }
 
     else

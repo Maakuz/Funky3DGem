@@ -12,17 +12,16 @@ out VS_OUT
 uniform mat4 VP;
 uniform mat4 WORLD;
 uniform mat4 WORLDINVTR;
+
 void main()
 {
-    gl_Position.xyz = pos;
-    gl_Position.w = 1.0;
+    vec4 newPos = vec4(pos, 1);
 
-    gl_Position = VP * WORLD * gl_Position;
-
-    vs_out.pos = gl_Position.xyz;
+    gl_Position = VP * WORLD * newPos;
 
     vec4 newNorm;
     newNorm.xyz = norm;
     newNorm.w = 1;
     vs_out.normal = normalize((WORLDINVTR * newNorm).xyz);
+    vs_out.pos = (WORLD * newPos).xyz;
 }

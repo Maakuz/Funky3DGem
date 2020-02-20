@@ -6,7 +6,7 @@
 #include "Component/PlayerInputComp.h"
 #include "Component/PhysicsComp.h"
 #include "Component/LightComp.h"
-#include "Renderer.h"
+#include "Renderer/Renderer.h"
 
 Game* Game::s_instance = nullptr;
 GLFWkeyfun Game::s_prevCallback;
@@ -174,7 +174,7 @@ void Game::debugEntities()
 {
     using namespace ImGui;
 
-    ShowDemoWindow();
+    //ShowDemoWindow();
 
     Begin("Entity debugger", &m_debugEntities);
 

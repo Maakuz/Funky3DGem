@@ -1,7 +1,7 @@
 #pragma once
 #include <GL/glew.h>
 #include "Shader.h"
-#include "Component/Entity.h"
+#include "DefferedPass.h"
 
 class Renderer
 {
@@ -15,10 +15,13 @@ public:
 	static void queueModel(Entity entity);
 
 private:
+	DefferedPass m_deffered;
 	Program m_forward;
 	Program m_shadowBuffer;
 	
 	static std::vector<Entity> s_modelQueue;
+
+	unsigned int m_quadID;
 
 	bool m_showDebug;
 };

@@ -1,18 +1,6 @@
 #version 410 core
 #define MAX_LIGHTS 20
 
-in VS_OUT
-{
-    vec3 pos;
-    vec3 normal;
-} ps_in;
-
-struct DirLight
-{
-    vec4 dir;
-    vec4 color;
-};
-
 uniform int DIR_LIGHT_COUNT;
 
 //Data formatted as
@@ -20,13 +8,20 @@ uniform int DIR_LIGHT_COUNT;
 //arr[1] = color
 uniform vec3 DIR_LIGHTS[MAX_LIGHTS * 2];
 
+//uniform sampler2D SHADOW_MAP;
+
+uniform sampler2D POS;
+uniform sampler2D NORMAL;
+uniform sampler2D COLOR;
+
+in vec2 uv;
 out vec3 color;
 void main()
 {
     vec3 diffuse = vec3(0, 0, 0);
     for (int i = 0; i < DIR_LIGHT_COUNT * 2; i++)
     {
-        diffuse += dot(-DIR_LIGHTS[i], ps_in.normal.xyz) * DIR_LIGHTS[i + 1];
+        diffuse += dot(-DIR_LIGHTS[i], texture(NORMAL, uv).xyz) * DIR_LIGHTS[i + 1] * texture(COLOR, uv).xyz;
     }
 
 

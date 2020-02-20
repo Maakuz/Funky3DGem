@@ -25,7 +25,7 @@ public:
 
 	struct DirLightShadow
 	{
-		bool castShadow;
+		Entity* assignedEntity;
 		glm::mat4 projection;
 		glm::mat4 view;
 		shadowMap map;
@@ -36,9 +36,14 @@ public:
 		DirLightShadow():
 			map(1024, true)
 		{
-			castShadow = true;
+			assignedEntity = nullptr;
 			projection = glm::ortho(-10.f, 10.f, -10.f, 10.f, 0.1f, 100.f);
 			view = glm::identity<glm::mat4>();
+		}
+
+		virtual ~DirLightShadow()
+		{
+			delete assignedEntity;
 		}
 	};
 
@@ -57,17 +62,19 @@ public:
 	void setDir(Entity entity, glm::vec3 dir);
 	void setColor(Entity entity, glm::vec3 color);
 
+	void setAsShadowCaster(Entity entity);
+
 	//Calculates view relative to camera
 	void calculateView();
 
 	const std::vector<DirectionalLight>* getDirectionalLights() const { return &m_lights; }
-	const std::vector<DirLightShadow>* getShadows() const { return &m_shadows; }
+	const DirLightShadow* getShadow() const { return &m_shadow; }
 
 	void printImguiDebug(Entity entity);
 
 private:
 	std::vector<Entity> m_owner;
 	std::vector<DirectionalLight> m_lights;
-	std::vector<DirLightShadow> m_shadows;
+	DirLightShadow m_shadow;
 	std::unordered_map<unsigned int, unsigned int> m_dataMap;
 };
