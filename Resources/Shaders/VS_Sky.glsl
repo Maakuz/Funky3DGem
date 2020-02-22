@@ -10,9 +10,10 @@ uniform mat4 VP;
 
 void main()
 {
+    pos0 = pos;
     vec4 newPos = vec4(pos, 1);
 
     gl_Position = VP * newPos;
 
-    gl_Position = newPos.xyww;
+    gl_Position = gl_Position.xyww;
 }

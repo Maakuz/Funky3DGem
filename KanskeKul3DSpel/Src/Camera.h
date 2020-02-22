@@ -22,6 +22,7 @@ public:
 	glm::vec3 getForward() const { return m_forward; }
 	glm::vec3 getRight() const { return m_right; }
 	glm::mat4 getView() const { return m_view; }
+	glm::mat4 getProjection() const { return m_projection; }
 	glm::mat4 getVP() const { return m_vp; }
 
 	void attachCamera(Entity entity);

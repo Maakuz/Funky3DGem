@@ -57,7 +57,7 @@ int main()
     if (glewInit() != GLEW_OK)
         return -2;
 
-    //glFrontFace(GL_CCW);
+    glFrontFace(GL_CCW);
 
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(MessageCallback, 0);
