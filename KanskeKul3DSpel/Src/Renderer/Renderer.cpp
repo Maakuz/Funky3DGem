@@ -8,46 +8,13 @@
 
 std::vector<Entity> Renderer::s_modelQueue;
 
-constexpr float quad[] = 
-{
-     1, -1,  0,
-    -1,  1,  0,
-    -1, -1,  0,
-             
-     1,  1,  0,
-    -1,  1,  0,
-     1, -1,  0,
-};
+
 
 Renderer::Renderer() :
-    m_forward({ Shader(SHADER_PATH "VS_Deffered.glsl", ShaderType::Vertex), Shader(SHADER_PATH "PS_Deffered.glsl", ShaderType::Fragment) }),
     m_shadowBuffer({ Shader(SHADER_PATH "VS_Shadow.glsl", ShaderType::Vertex), Shader(SHADER_PATH "PS_Shadow.glsl", ShaderType::Fragment) })
 {
-    m_forward.initializeUniformLocation("VP");
-    m_forward.initializeUniformLocation("WORLD");
-    m_forward.initializeUniformLocation("WORLDINVTR");
-
-    m_forward.initializeUniformLocation("DIR_LIGHT_COUNT");
-    m_forward.initializeUniformLocation("DIR_LIGHTS");
-
-    m_forward.initializeUniformLocation("LIGHT_VP");
-    m_forward.initializeUniformLocation("SHADOW_MAP");
-
-    m_forward.initializeUniformLocation("NORMAL");
-    m_forward.initializeUniformLocation("POS");
-    m_forward.initializeUniformLocation("COLOR");
-
     m_shadowBuffer.initializeUniformLocation("VP");
     m_shadowBuffer.initializeUniformLocation("WORLD");
-
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-
-    glGenBuffers(1, &m_quadID);
-    glBindBuffer(GL_ARRAY_BUFFER, m_quadID);
-    glBufferData(GL_ARRAY_BUFFER, 12 * 6, &quad[0], GL_STATIC_DRAW);
-
 
     m_showDebug = false;
 
@@ -95,55 +62,12 @@ void Renderer::draw()
         }
 
     }
-    
 
-    
+    m_deffered.firstPass(&s_modelQueue);
 
-    m_deffered.draw(&s_modelQueue);
+    m_deffered.secondPass(&lights->at(0).dir, size);
 
-    m_forward.use();
-
-
-
-    //glUniform1i(m_forward.getUniformID("SHADOW_MAP"), shadow->map.getFrameBufferID());
-
-    glUniform1iv(m_forward.getUniformID("DIR_LIGHT_COUNT"), 1, &size);
-
-    if (size > 0)
-        glUniform3fv(m_forward.getUniformID("DIR_LIGHTS"), size * 2, glm::value_ptr(lights->at(0).dir));
-
-    
-
-
-    ////Bind backbuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, 1920, 1080);
-
-    unsigned int pos = m_deffered.getPos();
-    unsigned int normal = m_deffered.getNormal();
-    unsigned int color = m_deffered.getColor();
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_deffered.getPos());
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m_deffered.getNormal());
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, m_deffered.getColor());
-
-    glUniform1i(m_forward.getUniformID("POS"), 0);
-    glUniform1i(m_forward.getUniformID("NORMAL"), 1);
-    glUniform1i(m_forward.getUniformID("COLOR"), 2);
-
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, m_quadID);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
-
-
-
+    m_sky.renderSky(m_deffered.getFBO());
 
     s_modelQueue.clear();
 }
@@ -161,13 +85,15 @@ void Renderer::rendererDebug()
         if (shadow->assignedEntity)
         {
             ImTextureID id = (void*)shadow->map.getFrameBufferID();
-            Image(id, { 200, 200 });
+            Image(id, ImVec2(256, 144), ImVec2(0, 1), ImVec2(1, 0));
+            SameLine();
         }
 
-        Image((void*)m_deffered.getPos(), { 200, 200 });
+        Image((void*)m_deffered.getPos(), ImVec2(256, 144), ImVec2(0, 1), ImVec2(1, 0));
+        Image((void*)m_deffered.getNormal(), ImVec2(256, 144), ImVec2(0, 1), ImVec2(1, 0));
         SameLine();
-        Image((void*)m_deffered.getNormal(), { 200, 200 });
-        Image((void*)m_deffered.getColor(), { 200, 200 });
+        Image((void*)m_deffered.getColor(), ImVec2(256, 144), ImVec2(0, 1), ImVec2(1, 0));
+        Image((void*)m_deffered.getDepth(), ImVec2(256, 144), ImVec2(0, 1), ImVec2(1, 0));
 
 
         End();

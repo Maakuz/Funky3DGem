@@ -34,6 +34,7 @@ public:
 	void removeComponent(Entity entity);
 	bool hasComponent(Entity entity) const { return m_dataMap.count(entity.id); }
 	ModelBuffer getBuffer(Entity entity) const;
+	ModelBuffer getBuffer(unsigned int meshID) const;
 	unsigned int getMesh(Entity entity) const;
 
 	void setMesh(Entity entity, unsigned int mesh);

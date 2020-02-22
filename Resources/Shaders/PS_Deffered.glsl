@@ -25,5 +25,5 @@ void main()
     }
 
 
-    color = diffuse;
+    color = texture(POS, uv).xyz;
 }

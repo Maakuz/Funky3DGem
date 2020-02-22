@@ -64,6 +64,17 @@ ModelComp::ModelBuffer ModelComp::getBuffer(Entity entity) const
     return m_meshes.at(m_data[m_dataMap.at(entity.id)].mesh);
 }
 
+ModelComp::ModelBuffer ModelComp::getBuffer(unsigned int meshID) const
+{
+    if (meshID >= m_meshes.size())
+    {
+        printfCon("ID OOB");
+        return ModelBuffer(NO_MESH, 0);
+    }
+
+    return m_meshes[meshID];
+}
+
 unsigned int ModelComp::getMesh(Entity entity) const
 {
     return m_data[m_dataMap.at(entity.id)].mesh;

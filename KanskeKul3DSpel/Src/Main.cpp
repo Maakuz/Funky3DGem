@@ -1,6 +1,35 @@
 #include "ImguiInit.h"
 #include "Game.h"
 #include "Renderer/Renderer.h"
+#include "Debug/ConsoleWindow.h"
+
+constexpr bool showWarnings = false;
+
+void GLAPIENTRY
+MessageCallback(GLenum source,
+    GLenum type,
+    GLuint id,
+    GLenum severity,
+    GLsizei length,
+    const GLchar* message,
+    const void* userParam)
+{
+    if (type == GL_DEBUG_TYPE_ERROR)
+    {
+        printf("GL CALLBACK ERROR: type = 0x%x, severity = 0x%x, message = %s\n",
+            type, severity, message);
+        printfCon("GL CALLBACK ERROR: %s\n", message);
+        printfCon("See terminal for details");
+    }
+
+    else if (showWarnings)
+    {
+        printf("GL CALLBACK: type = 0x%x, severity = 0x%x, message = %s\n",
+            type, severity, message);
+        printfCon("GL CALLBACK: %s\n", message);
+        printfCon("See terminal for details");
+    }
+}
 
 int main()
 {
@@ -27,6 +56,11 @@ int main()
     glewExperimental = true;
     if (glewInit() != GLEW_OK)
         return -2;
+
+    //glFrontFace(GL_CCW);
+
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(MessageCallback, 0);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -63,9 +97,7 @@ int main()
         //update
         game.run(dt);
 
-        //Clear
-        glClearColor(20, 100, 100, 255);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 
 

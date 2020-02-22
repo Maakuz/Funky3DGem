@@ -165,9 +165,10 @@
     <ClCompile Include="Src\Debug\Profiler.cpp" />
     <ClCompile Include="Src\Game.cpp" />
     <ClCompile Include="Src\Main.cpp" />
-    <ClCompile Include="Src\Renderer\DefferedPass.cpp" />
+    <ClCompile Include="Src\Renderer\DeferredPass.cpp" />
     <ClCompile Include="Src\Renderer\Renderer.cpp" />
     <ClCompile Include="Src\Renderer\Shader.cpp" />
+    <ClCompile Include="Src\Renderer\SkyDome.cpp" />
     <ClCompile Include="Src\ShadowMap.cpp" />
     <ClCompile Include="Src\UnorderedErase.h" />
   </ItemGroup>
@@ -187,18 +188,23 @@
     <ClInclude Include="Src\Debug\Profiler.h" />
     <ClInclude Include="Src\Game.h" />
     <ClInclude Include="Src\ImguiInit.h" />
-    <ClInclude Include="Src\Renderer\DefferedPass.h" />
+    <ClInclude Include="Src\Renderer\Constants.h" />
+    <ClInclude Include="Src\Renderer\DeferredPass.h" />
+    <ClInclude Include="Src\Renderer\FullScreenQuad.h" />
     <ClInclude Include="Src\Renderer\Renderer.h" />
     <ClInclude Include="Src\Renderer\Shader.h" />
+    <ClInclude Include="Src\Renderer\SkyDome.h" />
     <ClInclude Include="Src\ShadowMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shaders\PS_Deffered.glsl" />
     <None Include="..\Resources\Shaders\PS_Geometry.glsl" />
     <None Include="..\Resources\Shaders\PS_Shadow.glsl" />
+    <None Include="..\Resources\Shaders\PS_Sky.glsl" />
     <None Include="..\Resources\Shaders\VS_Deffered.glsl" />
     <None Include="..\Resources\Shaders\VS_Geometry.glsl" />
     <None Include="..\Resources\Shaders\VS_Shadow.glsl" />
+    <None Include="..\Resources\Shaders\VS_Sky.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -81,7 +81,10 @@
     <ClCompile Include="Src\Renderer\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Renderer\DefferedPass.cpp">
+    <ClCompile Include="Src\Renderer\SkyDome.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\DeferredPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -140,7 +143,16 @@
     <ClInclude Include="Src\Renderer\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Renderer\DefferedPass.h">
+    <ClInclude Include="Src\Renderer\FullScreenQuad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\SkyDome.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\DeferredPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -151,5 +163,7 @@
     <None Include="..\Resources\Shaders\VS_Geometry.glsl" />
     <None Include="..\Resources\Shaders\PS_Deffered.glsl" />
     <None Include="..\Resources\Shaders\VS_Deffered.glsl" />
+    <None Include="..\Resources\Shaders\PS_Sky.glsl" />
+    <None Include="..\Resources\Shaders\VS_Sky.glsl" />
   </ItemGroup>
 </Project>
