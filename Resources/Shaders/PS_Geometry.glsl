@@ -9,10 +9,13 @@ in VS_OUT
 layout (location = 0) out vec3 gPosition;
 layout (location = 1) out vec3 gNormal;
 layout (location = 2) out vec4 gColor;
+
+uniform vec3 MATCOL;
+
 void main()
 {
 
     gPosition = ps_in.pos;
     gNormal = ps_in.normal;
-    gColor = vec4(0, 1, 0, 1);
+    gColor = vec4(MATCOL.xyz, 1);
 }

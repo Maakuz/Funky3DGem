@@ -50,6 +50,8 @@ DeferredPass::DeferredPass():
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         printfCon("Error in generating deffered buffers");
 
+    m_first.initializeUniformLocation("MATCOL");
+
     m_first.initializeUniformLocation("VP");
     m_first.initializeUniformLocation("WORLD");
     m_first.initializeUniformLocation("WORLDINVTR");
@@ -89,7 +91,13 @@ void DeferredPass::firstPass(std::vector<Entity>* modelQueue)
         glUniformMatrix4fv(m_first.getUniformID("WORLD"), 1, GL_FALSE, &TransformComp::get().getTransformMat(entity)[0][0]);
         glUniformMatrix4fv(m_first.getUniformID("WORLDINVTR"), 1, GL_FALSE, &TransformComp::get().getInverseTransposeMat(entity)[0][0]);
 
-        ModelComp::ModelBuffer mesh = ModelComp::get().getBuffer(entity);
+        
+
+        ModelComp* mComp = &ModelComp::get();
+        ModelComp::ModelBuffer mesh = mComp->getBuffer(entity);
+        glm::vec3 color = mComp->getColor(entity);
+
+        glUniform3fv(m_first.getUniformID("MATCOL"), 1, &color[0]);
 
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexBufferID);

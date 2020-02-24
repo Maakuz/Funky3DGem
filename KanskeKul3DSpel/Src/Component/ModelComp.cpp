@@ -77,7 +77,35 @@ ModelComp::ModelBuffer ModelComp::getBuffer(unsigned int meshID) const
 
 unsigned int ModelComp::getMesh(Entity entity) const
 {
+    if (!TransformComp::get().hasComponent(entity))
+    {
+        printfCon("Entity need transform to have a model", entity.id);
+        return 0;
+    }
+
     return m_data[m_dataMap.at(entity.id)].mesh;
+}
+
+void ModelComp::setColor(Entity entity, glm::vec3 color)
+{
+    if (!TransformComp::get().hasComponent(entity))
+    {
+        printfCon("Entity need transform to have a model", entity.id);
+        return;
+    }
+
+    m_data[m_dataMap[entity.id]].color = color;
+}
+
+glm::vec3 ModelComp::getColor(Entity entity) const
+{
+    if (!TransformComp::get().hasComponent(entity))
+    {
+        printfCon("Entity need transform to have a model", entity.id);
+        return glm::vec3(0, 0, 0);
+    }
+
+    return m_data[m_dataMap.at(entity.id)].color;
 }
 
 void ModelComp::setMesh(Entity entity, unsigned int mesh)
@@ -107,6 +135,8 @@ void ModelComp::printImguiDebug(Entity entity)
 
             EndCombo();
         }
+
+        DragFloat3(("Color " + std::to_string(entity.id)).c_str(), &m_data[m_dataMap[entity.id]].color.x, 0.01, 0, 1);
     }
 
     else

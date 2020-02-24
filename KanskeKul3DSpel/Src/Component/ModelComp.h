@@ -36,6 +36,8 @@ public:
 	ModelBuffer getBuffer(Entity entity) const;
 	ModelBuffer getBuffer(unsigned int meshID) const;
 	unsigned int getMesh(Entity entity) const;
+	void setColor(Entity entity, glm::vec3 color);
+	glm::vec3 getColor(Entity entity) const;
 
 	void setMesh(Entity entity, unsigned int mesh);
 
@@ -46,11 +48,13 @@ private:
 	{
 		Entity owner;
 		unsigned int mesh;
+		glm::vec3 color;
 
 		Model(Entity owner)
 		{
 			this->mesh = 0;
 			this->owner = owner;
+			this->color = glm::vec3(0, 0.9, 0.9);
 		}
 	};
 
