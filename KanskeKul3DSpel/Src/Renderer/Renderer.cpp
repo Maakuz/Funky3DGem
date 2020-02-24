@@ -29,20 +29,19 @@ Renderer::Renderer() :
 void Renderer::draw()
 {
     const std::vector<DirectionalLightComp::DirectionalLight>* lights = DirectionalLightComp::get().getDirectionalLights();
-    const DirectionalLightComp::DirLightShadow* shadow = DirectionalLightComp::get().getShadow();
+    const DirectionalShadow* shadow = DirectionalLightComp::get().getShadow();
     int size = lights->size();
     
     //Shadow buffering
     m_shadowBuffer.use();
 
-    if (shadow->assignedEntity)
+    if (shadow->getAssignedEntity())
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, shadow->map.getFrameBufferID());
-        glViewport(0, 0, shadow->map.getRes(), shadow->map.getRes());
+        glBindFramebuffer(GL_FRAMEBUFFER, shadow->getMap()->getFrameBufferID());
+        glViewport(0, 0, shadow->getMap()->getRes(), shadow->getMap()->getRes());
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 vp = shadow->vp();
-        glUniformMatrix4fv(m_shadowBuffer.getUniformID("VP"), 1, GL_FALSE, &vp[0][0]);
+        glUniformMatrix4fv(m_shadowBuffer.getUniformID("VP"), 1, GL_FALSE, &shadow->getVP()[0][0]);
 
         for (size_t i = 0; i < s_modelQueue.size(); i++)
         {
@@ -79,12 +78,12 @@ void Renderer::rendererDebug()
     {
         Begin("Renderererererer debug", &m_showDebug);
 
-        const DirectionalLightComp::DirLightShadow* shadow = DirectionalLightComp::get().getShadow();
+        const DirectionalShadow* shadow = DirectionalLightComp::get().getShadow();
 
         
-        if (shadow->assignedEntity)
+        if (shadow->getAssignedEntity())
         {
-            ImTextureID id = (void*)shadow->map.getFrameBufferID();
+            ImTextureID id = (void*)shadow->getMap()->getFrameBufferID();
             Image(id, ImVec2(256, 144), ImVec2(0, 1), ImVec2(1, 0));
             SameLine();
         }

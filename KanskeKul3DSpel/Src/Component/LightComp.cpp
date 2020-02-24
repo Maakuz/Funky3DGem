@@ -79,20 +79,20 @@ void DirectionalLightComp::setAsShadowCaster(Entity entity)
         return;
     }
 
-    if (m_shadow.assignedEntity)
-        delete m_shadow.assignedEntity;
-
-    m_shadow.assignedEntity = new Entity(entity);
+    m_shadow.assignEntity(&entity);
 }
 
 void DirectionalLightComp::calculateView()
 {
     Camera* cam = &Camera::get();
 
-    if (m_shadow.assignedEntity)
+    const Entity* shadowEntity = m_shadow.getAssignedEntity();
+
+    if (shadowEntity)
     {
-        glm::vec3 pos = cam->getPos() + (-m_lights[m_dataMap[m_shadow.assignedEntity->id]].dir * 10.f);
-        m_shadow.view = glm::lookAt(pos, cam->getPos(), { 0, 1, 0 });
+        glm::vec3 pos = cam->getPos() + (-m_lights[m_dataMap[shadowEntity->id]].dir * 10.f);
+        m_shadow.setView(glm::lookAt(pos, cam->getPos(), { 0, 1, 0 }));
+        m_shadow.calculateVP();
     }
 }
 

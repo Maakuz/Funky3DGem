@@ -168,8 +168,9 @@
     <ClCompile Include="Src\Renderer\DeferredPass.cpp" />
     <ClCompile Include="Src\Renderer\Renderer.cpp" />
     <ClCompile Include="Src\Renderer\Shader.cpp" />
+    <ClCompile Include="Src\Renderer\Shadow\DirectionalShadow.cpp" />
     <ClCompile Include="Src\Renderer\SkyDome.cpp" />
-    <ClCompile Include="Src\ShadowMap.cpp" />
+    <ClCompile Include="Src\Renderer\Shadow\ShadowMap.cpp" />
     <ClCompile Include="Src\UnorderedErase.h" />
   </ItemGroup>
   <ItemGroup>
@@ -193,8 +194,9 @@
     <ClInclude Include="Src\Renderer\FullScreenQuad.h" />
     <ClInclude Include="Src\Renderer\Renderer.h" />
     <ClInclude Include="Src\Renderer\Shader.h" />
+    <ClInclude Include="Src\Renderer\Shadow\DirectionalShadow.h" />
     <ClInclude Include="Src\Renderer\SkyDome.h" />
-    <ClInclude Include="Src\ShadowMap.h" />
+    <ClInclude Include="Src\Renderer\Shadow\ShadowMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shaders\PS_Deffered.glsl" />

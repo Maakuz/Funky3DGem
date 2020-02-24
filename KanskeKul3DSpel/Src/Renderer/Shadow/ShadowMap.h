@@ -1,14 +1,14 @@
 #pragma once
 #include "GL/glew.h"
 
-class shadowMap
+class ShadowMap
 {
 public:
-	shadowMap(unsigned int resolution = 1024, bool orthogonal = true);
+	ShadowMap(unsigned int resolution, bool orthogonal = true);
 
 	unsigned int getFrameBufferID() const { return m_frameBufferID; }
 	unsigned int getRes() const { return m_res; }
-	virtual ~shadowMap(){}
+	virtual ~ShadowMap(){}
 
 private:
 	unsigned int m_frameBufferID;

@@ -2,6 +2,7 @@
 #include "Debug/ConsoleWindow.h"
 #include "Component/ModelComp.h"
 #include "Component/TransformComp.h"
+#include "Component/LightComp.h"
 #include "Camera.h"
 #include "FullScreenQuad.h"
 #include "glm/gtc/type_ptr.hpp"
@@ -58,11 +59,12 @@ DeferredPass::DeferredPass():
     m_second.initializeUniformLocation("DIR_LIGHTS");
 
     m_second.initializeUniformLocation("LIGHT_VP");
-    m_second.initializeUniformLocation("SHADOW_MAP");
+    m_second.initializeUniformLocation("SHADOW_EXISTS");
 
     m_second.initializeUniformLocation("NORMAL");
     m_second.initializeUniformLocation("POS");
     m_second.initializeUniformLocation("COLOR");
+    m_second.initializeUniformLocation("SHADOW");
 }
 
 void DeferredPass::firstPass(std::vector<Entity>* modelQueue)
@@ -118,6 +120,7 @@ void DeferredPass::secondPass(const glm::vec3* firstDirLight, int lightCount)
     glClearColor(0, 0, 0, 255);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    const DirectionalShadow* shadow = DirectionalLightComp::get().getShadow();
     //glUniform1i(m_forward.getUniformID("SHADOW_MAP"), shadow->map.getFrameBufferID());
     
     glUniform1iv(m_second.getUniformID("DIR_LIGHT_COUNT"), 1, &lightCount);
@@ -136,6 +139,20 @@ void DeferredPass::secondPass(const glm::vec3* firstDirLight, int lightCount)
     glUniform1i(m_second.getUniformID("POS"), 0);
     glUniform1i(m_second.getUniformID("NORMAL"), 1);
     glUniform1i(m_second.getUniformID("COLOR"), 2);
+
+    //Shadow mapping
+    int shadowExist = shadow->getAssignedEntity() ? 1 : 0;
+
+    glUniform1i(m_second.getUniformID("SHADOW_EXISTS"), shadowExist);
+
+    if (shadowExist)
+    {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, shadow->getMap()->getFrameBufferID());
+        glUniform1i(m_second.getUniformID("SHADOW"), 3);
+
+        glUniformMatrix4fv(m_second.getUniformID("LIGHT_VP"), 1, GL_FALSE, &shadow->getVP()[0][0]);
+    }
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, Quad::get().getID());

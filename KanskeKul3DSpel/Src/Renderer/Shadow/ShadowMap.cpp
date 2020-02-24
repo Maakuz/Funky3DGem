@@ -1,7 +1,7 @@
 #include "ShadowMap.h"
 #include "Debug/ConsoleWindow.h"
 
-shadowMap::shadowMap(unsigned int resolution, bool orthogonal)
+ShadowMap::ShadowMap(unsigned int resolution, bool orthogonal)
 {
     m_res = resolution;
     m_orthogonal = orthogonal;

@@ -50,8 +50,9 @@ Game::Game(GLFWwindow* window)
     PhysicsComp::get().setMass(e, 2);
     PlayerInputComp::get().addInput(e);
     DirectionalLightComp::get().addComponent(e);
-    DirectionalLightComp::get().setColor(e, { 0.7, 0.2, 0 });
-    DirectionalLightComp::get().setDir(e, {0.2, -0.6, 0.2});
+    DirectionalLightComp::get().setColor(e, { 0.7, 0.7, 0.7 });
+    DirectionalLightComp::get().setDir(e, { 0.2, -0.6, 0.2 });
+    DirectionalLightComp::get().setAsShadowCaster(e);
     e = m_manager.createEntity();
     m_entities.push_back(e);
 
@@ -59,6 +60,13 @@ Game::Game(GLFWwindow* window)
     TransformComp::get().setScale(e, { 10, 1, 10 });
     ModelComp::get().addComponent(e);
     PhysicsComp::get().addComponent(e);
+
+    e = m_manager.createEntity();
+    m_entities.push_back(e);
+
+    TransformComp::get().addComponent(e);
+    TransformComp::get().setPosition(e, { 0, 2, 0 });
+    ModelComp::get().addComponent(e);
 
     s_prevCallback = glfwSetKeyCallback(m_window, inputCallbackWrapper);
 

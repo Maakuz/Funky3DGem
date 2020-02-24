@@ -4,6 +4,7 @@
 #include "Renderer/Shader.h"
 #include <vector>
 #include <glm/vec3.hpp>
+#include "Shadow/DirectionalShadow.h"
 
 class DeferredPass
 {
